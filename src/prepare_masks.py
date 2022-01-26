@@ -18,6 +18,8 @@ def blur(img):
 def guineapig():
     """Crée tous les masques, en les laissant inscrit sur le disque"""
     for pic_num in range(len(layer_list)):
+        if (pic_num % 100) == 0:
+            print(f'Nombre de fichiers traités : {str(pic_num)},\nNombre de fichiers restant : {str(len(layer_list) - pic_num)}')
         dfl = pd.read_json(layer_list[pic_num])
         h = dfl.at[0, 'imgHeight']
         w = dfl.at[0, 'imgWidth']
