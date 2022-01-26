@@ -25,4 +25,9 @@ def marlboro():
         del df
 
 
-marlboro()
+def main():
+    marlboro()
+
+
+if __name__ == "__main__":
+    main()

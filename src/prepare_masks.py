@@ -42,4 +42,9 @@ def guineapig():
     return
 
 
-guineapig()
+def main():
+    guineapig()
+
+
+if __name__ == "__main__":
+    main()
