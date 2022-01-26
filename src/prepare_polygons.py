@@ -1,5 +1,4 @@
 import pandas as pd
-from glob import glob
 from laerte import ctimene
 from laerte import ulysse
 
@@ -14,6 +13,8 @@ def marlboro():
     global dict_label
     # Boucle pour transformer les fichiers en 8 groupes
     for i in range(len(mask_list)):
+        if (i % 100) == 0:
+            print(f'Nombre de fichiers traités : {str(i)},\nNombre de fichiers restant : {str(len(mask_list) - i)}')
         num_ind = pd.read_json(mask_list[i])['objects'].shape[0]
         df = pd.read_json(mask_list[i])
         for j in range(num_ind):

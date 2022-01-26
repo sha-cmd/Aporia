@@ -1,10 +1,11 @@
-import glob
 import pandas as pd
 import cv2
 import numpy as np
-from laerte import ctimene
+import laerte
+from laerte import anticlee
 
-dict_label = ctimene()
+layer_list = anticlee()
+dict_label_clr = laerte.sisyphe()
 
 
 def blur(img):
@@ -16,19 +17,11 @@ def blur(img):
 
 def guineapig():
     """Crée tous les masques, en les laissant inscrit sur le disque"""
-    layer_list = sorted(glob.glob('data/finetuning/gtFine/**/*octogroups.json', recursive=True))
     for pic_num in range(len(layer_list)):
         dfl = pd.read_json(layer_list[pic_num])
         h = dfl.at[0, 'imgHeight']
         w = dfl.at[0, 'imgWidth']
-        dict_label_clr = {'construction': 60,
-                          'flat': 30,
-                          'human': 100,
-                          'nature': 80,
-                          'object': 20,
-                          'sky': 40,
-                          'vehicle': 120,
-                          'void': 10}
+
 
         img_mask = np.zeros(np.hstack((h, w)), dtype='uint8')
         for poly_num in range(len(dfl)):

@@ -1,6 +1,11 @@
 from glob import glob
 
 
+def anticlee():
+    layer_list = sorted(glob('data/finetuning/gtFine/**/*octogroups.json', recursive=True))
+    return layer_list
+
+
 def ctimene():
     dict_label = {'road': 'flat', 'sidewalk': 'flat', 'parking': 'flat', 'rail track': 'flat',
                   'person': 'human', 'rider': 'human',
@@ -34,3 +39,15 @@ def ctimene():
 
 def ulysse():
     return glob('data/finetuning/gtFine/**/*polygons.json', recursive=True)
+
+
+def sisyphe():
+    dict_label_clr = {'construction': 60,
+                      'flat': 30,
+                      'human': 100,
+                      'nature': 80,
+                      'object': 20,
+                      'sky': 40,
+                      'vehicle': 120,
+                      'void': 10}
+    return dict_label_clr
