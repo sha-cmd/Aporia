@@ -1,0 +1,5 @@
+stages:
+  octagones:
+    cmd: python src/prepare_polygons.py
+  brush-work:
+    cmd: python src/prepare_masks.py

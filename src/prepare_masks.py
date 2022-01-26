@@ -16,7 +16,7 @@ def blur(img):
 
 def guineapig():
     """Crée tous les masques, en les laissant inscrit sur le disque"""
-    layer_list = sorted(glob.glob('../data/finetuning/gtFine/**/*octogroups.json', recursive=True))
+    layer_list = sorted(glob.glob('data/finetuning/gtFine/**/*octogroups.json', recursive=True))
     for pic_num in range(len(layer_list)):
         dfl = pd.read_json(layer_list[pic_num])
         h = dfl.at[0, 'imgHeight']

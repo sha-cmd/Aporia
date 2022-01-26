@@ -33,4 +33,4 @@ def ctimene():
 
 
 def ulysse():
-    return glob('../data/finetuning/gtFine/**/*polygons.json', recursive=True)
+    return glob('data/finetuning/gtFine/**/*polygons.json', recursive=True)
