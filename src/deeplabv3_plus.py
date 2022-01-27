@@ -1,7 +1,5 @@
 
 import os
-import cv2
-import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
 
@@ -25,12 +23,13 @@ print('Found', len(val_masks), 'validation masks')
 
 for i in range(len(train_images)):
     assert train_images[i].split(
-        '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1].split('_gtFine_polygons_octogroups')[0]
+        '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1]\
+        .split('_gtFine_polygons_octogroups')[0]
 print('Train images correspond to train masks')
 
 for i in range(len(val_images)):
-    assert val_images[i].split('/')[-1].split('_leftImg8bit')[
-        0] == val_masks[i].split('/')[-1].split('_gtFine_polygons_octogroups')[0]
+    assert val_images[i].split('/')[-1].split('_leftImg8bit')[0] == val_masks[i]\
+        .split('/')[-1].split('_gtFine_polygons_octogroups')[0]
 print('Validation images correspond to validation masks')
 
 

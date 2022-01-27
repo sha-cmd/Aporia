@@ -8,8 +8,7 @@ from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
 from glob import glob
-from tools import DATA_DIR, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
-from tools import data_generator
+from tools import DATA_DIR
 
 test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
 test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))

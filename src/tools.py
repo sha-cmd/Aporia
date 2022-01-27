@@ -2,10 +2,11 @@ import tensorflow as tf
 
 IMAGE_SIZE = 256
 BATCH_SIZE = 4
-NUM_CLASSES = 8
+NUM_CLASSES = 9
 DATA_DIR = "../data"
 NUM_TRAIN_IMAGES = 1000
 NUM_VAL_IMAGES = 50
+
 
 def loss_pool():
     dict_loss = {'binary_cross': tf.keras.losses.binary_crossentropy(),
@@ -14,6 +15,7 @@ def loss_pool():
                  'poisson': tf.keras.losses.poisson(),
                  'kl_divergence': tf.keras.losses.kl_divergence()}
     return dict_loss
+
 
 def optim_pool(learning_rate=0.001):
     dict_optim = {'adam': tf.keras.optimizers.Adam(learning_rate=learning_rate),
@@ -25,6 +27,7 @@ def optim_pool(learning_rate=0.001):
                   'nadam': tf.keras.optimizers.Nadam(learning_rate=learning_rate),
                   'ftrl': tf.keras.optimizers.Ftrl(learning_rate=learning_rate)}
     return dict_optim
+
 
 def read_image(image_path, mask=False):
     image = tf.io.read_file(image_path)
