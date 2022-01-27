@@ -9,6 +9,6 @@ stages:
       - models/k2000:
           cache: false
           persist: false
-          desc: modelisation of the segmentation of images of Cityscapes.
+          desc: modeling of the segmentation of images of Cityscapes.
   kit:
     cmd: python src/inference.py
