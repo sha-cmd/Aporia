@@ -17,14 +17,21 @@ train_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*oc
 val_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))#[:NUM_VAL_IMAGES]
 val_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))#[:NUM_VAL_IMAGES]
 
+print('Found', len(train_images), 'training images')
+print('Found', len(train_masks), 'training masks')
+print('Found', len(val_images), 'validation images')
+print('Found', len(val_masks), 'validation masks')
+
+
 for i in range(len(train_images)):
     assert train_images[i].split(
         '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1].split('_gtFine_polygons_octogroups')[0]
+print('Train images correspond to train masks')
 
 for i in range(len(val_images)):
     assert val_images[i].split('/')[-1].split('_leftImg8bit')[
         0] == val_masks[i].split('/')[-1].split('_gtFine_polygons_octogroups')[0]
-
+print('Validation images correspond to validation masks')
 
 
 
