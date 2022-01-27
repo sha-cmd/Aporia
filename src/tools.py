@@ -3,7 +3,7 @@ import tensorflow as tf
 IMAGE_SIZE = 256
 BATCH_SIZE = 4
 NUM_CLASSES = 8
-DATA_DIR = "../data"
+DATA_DIR = "data"
 NUM_TRAIN_IMAGES = 1000
 NUM_VAL_IMAGES = 50
 

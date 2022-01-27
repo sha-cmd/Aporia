@@ -3,3 +3,5 @@ stages:
     cmd: python src/prepare_polygons.py
   brush-work:
     cmd: python src/prepare_masks.py
+  k2000:
+    cmd: python src/deeplabv3_plus.py
