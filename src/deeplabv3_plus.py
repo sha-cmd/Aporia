@@ -111,14 +111,15 @@ model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
+callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
 model.compile(
     optimizer=optimizer,
     loss=loss,
     metrics=["accuracy"],
 )
 
-history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs)
-model.save('models/k2000')
+history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
+#model.save('models/k2000')
 
 # Lignes de charts à orchestrer via DVC Studio et Log de Keras pour représentation on the net !
 plt.plot(history.history["loss"])
