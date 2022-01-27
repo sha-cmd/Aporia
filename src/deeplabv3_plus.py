@@ -20,7 +20,6 @@ print('Found', len(train_masks), 'training masks')
 print('Found', len(val_images), 'validation images')
 print('Found', len(val_masks), 'validation masks')
 
-
 for i in range(len(train_images)):
     assert train_images[i].split(
         '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1]\
@@ -31,7 +30,6 @@ for i in range(len(val_images)):
     assert val_images[i].split('/')[-1].split('_leftImg8bit')[0] == val_masks[i]\
         .split('/')[-1].split('_gtFine_polygons_octogroups')[0]
 print('Validation images correspond to validation masks')
-
 
 
 train_dataset = data_generator(train_images, train_masks)
@@ -106,7 +104,6 @@ def DeeplabV3Plus(image_size, num_classes):
 
 
 model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
-#model.summary()
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
