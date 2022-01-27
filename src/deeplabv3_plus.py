@@ -114,7 +114,7 @@ model.compile(
 )
 
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=1)
-model.save('../models/keras_model')
+model.save('models/k2000')
 
 plt.plot(history.history["loss"])
 plt.title("Training Loss")
