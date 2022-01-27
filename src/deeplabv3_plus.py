@@ -120,26 +120,28 @@ model.compile(
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs)
 model.save('models/k2000')
 
+# Lignes de charts à orchestrer via DVC Studio et Log de Keras pour représentation on the net !
 plt.plot(history.history["loss"])
 plt.title("Training Loss")
 plt.ylabel("loss")
 plt.xlabel("epoch")
-plt.show()
+plt.savefig("model_plots/train_loss.jpg")
 
 plt.plot(history.history["accuracy"])
 plt.title("Training Accuracy")
 plt.ylabel("accuracy")
 plt.xlabel("epoch")
-plt.show()
+plt.savefig("model_plots/train_acc.jpg")
 
 plt.plot(history.history["val_loss"])
 plt.title("Validation Loss")
 plt.ylabel("val_loss")
 plt.xlabel("epoch")
-plt.show()
+plt.savefig("model_plots/val_loss.jpg")
 
 plt.plot(history.history["val_accuracy"])
 plt.title("Validation Accuracy")
 plt.ylabel("val_accuracy")
 plt.xlabel("epoch")
-plt.show()
+plt.savefig("model_plots/val_acc.jpg")
+
