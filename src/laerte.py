@@ -42,12 +42,12 @@ def ulysse():
 
 
 def sisyphe():
-    dict_label_clr = {'construction': 60,
-                      'flat': 30,
-                      'human': 100,
-                      'nature': 80,
-                      'object': 20,
-                      'sky': 40,
-                      'vehicle': 120,
-                      'void': 10}
+    dict_label_clr = {'construction': 6,
+                      'flat': 3,
+                      'human': 8,
+                      'nature': 7,
+                      'object': 5,
+                      'sky': 4,
+                      'vehicle': 2,
+                      'void': 1}
     return dict_label_clr
