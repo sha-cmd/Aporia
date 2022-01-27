@@ -1,14 +1,13 @@
 
 import os
-from glob import glob
 import matplotlib.pyplot as plt
-
 import tensorflow as tf
+
+from glob import glob
 from tensorflow import keras
 from tensorflow.keras import layers
 from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
 from tools import data_generator
-
 
 train_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
 train_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
