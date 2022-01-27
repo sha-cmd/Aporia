@@ -73,8 +73,20 @@ def plot_predictions(images_list, colormap, model):
         )
 
 
+def mIoU(images_list, masks_list, model):
+    res = []
+    for image_file, mask_file in zip(images_list, masks_list):
+        image_tensor = read_image(image_file)
+        prediction_mask = infer(image_tensor=image_tensor, model=model)
+        mask_tensor = read_image(mask_file, mask=True)
+        m = tf.keras.metrics.MeanIoU(num_classes=8)
+        m.update_state(prediction_mask, mask_tensor)
+        res.append(m.result().numpy())
+    return res
+
 """
 ### Inference on Test Images
 """
 
 plot_predictions(test_images[:4], colormap, model=history)
+print(mIoU(test_images[:4], test_masks[:4], model=history))
