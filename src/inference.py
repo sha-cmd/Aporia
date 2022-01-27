@@ -11,17 +11,8 @@ from glob import glob
 from tools import DATA_DIR, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
 from tools import data_generator
 
-train_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/**/*.png"), recursive=True))[:NUM_TRAIN_IMAGES]
-train_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/**/*octogroups.png"), recursive=True))[:NUM_TRAIN_IMAGES]
-val_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/**/*.png"), recursive=True))[
-             NUM_TRAIN_IMAGES : NUM_VAL_IMAGES + NUM_TRAIN_IMAGES
-             ]
-val_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/**/*octogroups.png"), recursive=True))[
-            NUM_TRAIN_IMAGES : NUM_VAL_IMAGES + NUM_TRAIN_IMAGES
-            ]
-
-train_dataset = data_generator(train_images, train_masks)
-val_dataset = data_generator(val_images, val_masks)
+test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
+test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
 
 history = keras.models.load_model('../models/keras_model')
 
@@ -84,13 +75,7 @@ def plot_predictions(images_list, colormap, model):
 
 
 """
-### Inference on Train Images
+### Inference on Test Images
 """
 
-plot_predictions(train_images[:4], colormap, model=history)
-
-"""
-### Inference on Validation Images
-"""
-
-plot_predictions(val_images[:4], colormap, model=history)
+plot_predictions(test_images[:4], colormap, model=history)

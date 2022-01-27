@@ -8,18 +8,25 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-from tools import DATA_DIR, NUM_CLASSES, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES, IMAGE_SIZE
+from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
 from tools import data_generator
 
 
-train_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/**/*.png"), recursive=True))[:NUM_TRAIN_IMAGES]
-train_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/**/*octogroups.png"), recursive=True))[:NUM_TRAIN_IMAGES]
-val_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/**/*.png"), recursive=True))[
-    NUM_TRAIN_IMAGES : NUM_VAL_IMAGES + NUM_TRAIN_IMAGES
-]
-val_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/**/*octogroups.png"), recursive=True))[
-    NUM_TRAIN_IMAGES : NUM_VAL_IMAGES + NUM_TRAIN_IMAGES
-]
+train_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
+train_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
+val_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))#[:NUM_VAL_IMAGES]
+val_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))#[:NUM_VAL_IMAGES]
+
+for i in range(len(train_images)):
+    assert train_images[i].split(
+        '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1].split('_gtFine_polygons_octogroups')[0]
+
+for i in range(len(val_images)):
+    assert val_images[i].split('/')[-1].split('_leftImg8bit')[
+        0] == val_masks[i].split('/')[-1].split('_gtFine_polygons_octogroups')[0]
+
+
+
 
 train_dataset = data_generator(train_images, train_masks)
 val_dataset = data_generator(val_images, val_masks)
@@ -93,7 +100,7 @@ def DeeplabV3Plus(image_size, num_classes):
 
 
 model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
-model.summary()
+#model.summary()
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
@@ -103,8 +110,8 @@ model.compile(
     metrics=["accuracy"],
 )
 
-history = model.fit(train_dataset, validation_data=val_dataset, epochs=25)
-model.save('models/keras_model')
+history = model.fit(train_dataset, validation_data=val_dataset, epochs=1)
+model.save('../models/keras_model')
 
 plt.plot(history.history["loss"])
 plt.title("Training Loss")
