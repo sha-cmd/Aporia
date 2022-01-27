@@ -13,13 +13,13 @@ from tools import DATA_DIR
 test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
 test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
 
-history = keras.models.load_model('../models/keras_model')
+history = keras.models.load_model('models/keras_model')
 
 
 
 # Loading the Colormap
 colormap = loadmat(
-    "city_colormap.mat"
+    "src/city_colormap.mat"
 )["colormap"]
 colormap = colormap * 100
 colormap = colormap.astype(np.uint8)
