@@ -1,8 +1,8 @@
-
 import os
 import tensorflow as tf
 import yaml
 import multi_plots as mps
+import inference as irnc
 
 from dvclive.keras import DvcLiveCallback
 from glob import glob
@@ -10,16 +10,21 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
 from tools import data_generator
+from tools import data_augmented
 
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
     data_mix = str(params['k2000']['data_mix'])
     epochs = int(params['k2000']['epochs'])
 
-train_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
-train_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
-val_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))#[:NUM_VAL_IMAGES]
-val_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))#[:NUM_VAL_IMAGES]
+train_images = sorted(
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
+train_masks = sorted(
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
+val_images = sorted(
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))#[:NUM_VAL_IMAGES]
+val_masks = sorted(
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))#[:NUM_VAL_IMAGES]
 
 print('Found', len(train_images), 'training images')
 print('Found', len(train_masks), 'training masks')
@@ -28,30 +33,31 @@ print('Found', len(val_masks), 'validation masks')
 
 for i in range(len(train_images)):
     assert train_images[i].split(
-        '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1]\
-        .split('_gtFine_polygons_octogroups')[0]
+        '/')[-1].split('_leftImg8bit')[0] == train_masks[i].split('/')[-1] \
+               .split('_gtFine_polygons_octogroups')[0]
 print('Train images correspond to train masks')
 
 for i in range(len(val_images)):
-    assert val_images[i].split('/')[-1].split('_leftImg8bit')[0] == val_masks[i]\
+    assert val_images[i].split('/')[-1].split('_leftImg8bit')[0] == val_masks[i] \
         .split('/')[-1].split('_gtFine_polygons_octogroups')[0]
 print('Validation images correspond to validation masks')
 
-
-train_dataset = data_generator(train_images, train_masks)
-val_dataset = data_generator(val_images, val_masks)
+data_blend = {'not_augmented': data_generator,
+              'augmented': data_augmented}
+train_dataset = data_blend[data_mix](train_images, train_masks)
+val_dataset = data_blend[data_mix](val_images, val_masks)
 
 print("Train Dataset:", train_dataset)
 print("Val Dataset:", val_dataset)
 
 
 def convolution_block(
-    block_input,
-    num_filters=256,
-    kernel_size=3,
-    dilation_rate=1,
-    padding="same",
-    use_bias=False,
+        block_input,
+        num_filters=256,
+        kernel_size=3,
+        dilation_rate=1,
+        padding="same",
+        use_bias=False,
 ):
     x = layers.Conv2D(
         num_filters,
@@ -113,7 +119,7 @@ model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
-callback = [DvcLiveCallback(path="./k2000_" + data_mix), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
+callback = [DvcLiveCallback(path="./k2000"), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 model.compile(
     optimizer=optimizer,
     loss=loss,
@@ -126,3 +132,5 @@ model.save('models/k2000')
 # Création des plots
 mps.main()
 
+# Création de la métriques sur jeu de test
+irnc.main()
