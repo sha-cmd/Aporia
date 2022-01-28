@@ -5,6 +5,8 @@ stages:
     cmd: python src/prepare_masks.py
   k2000:
     cmd: python src/deeplabv3_plus.py
+    params:
+      - k2000.epochs
     metrics:
       - k2000_not_augmented.json:
           cache: false

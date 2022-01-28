@@ -4,3 +4,21 @@ stages:
     cmd: python src/prepare_polygons.py
   brush-work:
     cmd: python src/prepare_masks.py
+  k2000:
+    cmd: python src/deeplabv3_plus.py
+    outs:
+    - path: k2000_not_augmented.json
+      md5: 3adcb8416ba9291868dfa18bc0e20034
+      size: 160
+    - path: k2000_not_augmented/accuracy_multi_plots.csv
+      md5: 2713c3d1226781ad065c8eade36b46ef
+      size: 289
+    - path: k2000_not_augmented/loss_multi_plots.csv
+      md5: 3f77959b75cac855ef60d6921eb395a4
+      size: 281
+    - path: models/k2000
+      md5: 89c372d3f902f0ff1fe635cee27aa133.dir
+      size: 146545383
+      nfiles: 4
+  kit:
+    cmd: python src/inference.py
