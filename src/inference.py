@@ -9,20 +9,9 @@ from tensorflow import keras
 from tools import read_image
 from glob import glob
 from tools import DATA_DIR
+from dvclive import Live
 
-test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
-test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
-
-history = keras.models.load_model('models/keras_model')
-
-
-
-# Loading the Colormap
-colormap = loadmat(
-    "src/city_colormap.mat"
-)["colormap"]
-colormap = colormap * 100
-colormap = colormap.astype(np.uint8)
+live = Live()
 
 
 def infer(model, image_tensor):
@@ -85,10 +74,25 @@ def mIoU(images_list, masks_list, model):
     return res
 
 
-"""
-### Inference on Test Images
-"""
+def main():
+    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
+    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
 
-plot_predictions(test_images[:4], colormap, model=history)
-res = mIoU(test_images[:4], test_masks[:4], model=history)
-print(sum(res)/len(res))
+    history = keras.models.load_model('models/k2000')
+
+    # Loading the Colormap
+    colormap = loadmat(
+        "src/city_colormap.mat"
+    )["colormap"]
+    colormap = colormap * 100
+    colormap = colormap.astype(np.uint8)
+
+#    plot_predictions(test_images[:4], colormap, model=history)
+    res = mIoU(test_images[:], test_masks[:], model=history)
+    avg_res = sum(res) / len(res)
+    print(avg_res)
+    live.log("mIoU", avg_res)
+
+
+if __name__ == "__main__":
+    main()

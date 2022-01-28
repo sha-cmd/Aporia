@@ -1,11 +1,14 @@
+import pandas as pd
 import tensorflow as tf
+import numpy as np
+import imgaug.augmenters as iaa
 
 IMAGE_SIZE = 256
 BATCH_SIZE = 4
 NUM_CLASSES = 8
 DATA_DIR = "data"
-NUM_TRAIN_IMAGES = 1000
-NUM_VAL_IMAGES = 50
+NUM_TRAIN_IMAGES = 50
+NUM_VAL_IMAGES = 10
 
 
 def loss_pool():
@@ -35,11 +38,13 @@ def read_image(image_path, mask=False):
         image = tf.image.decode_png(image, channels=1)
         image.set_shape([1024, 2048, 1])
         image = tf.image.resize(images=image, size=[IMAGE_SIZE, IMAGE_SIZE])
+
     else:
         image = tf.image.decode_png(image, channels=3)
         image.set_shape([1024, 2048, 3])
         image = tf.image.resize(images=image, size=[IMAGE_SIZE, IMAGE_SIZE])
         image = image / 127.5 - 1
+
     return image
 
 
@@ -50,7 +55,23 @@ def load_data(image_list, mask_list):
 
 
 def data_generator(image_list, mask_list):
+    """Retourne les données telles quelles"""
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
+    dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
+    return dataset
+
+
+def data_augmented(image_list, mask_list):
+    """Retourne les données augmentées"""
+    img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=20)
+    image_aug = img_gen.flow_from_dataframe(dataframe=pd.DataFrame(image_list, columns=['filename']),
+                                            directory='.', class_mode=None, batch_size=4)
+    mask_aug = img_gen.flow_from_dataframe(dataframe=pd.DataFrame(mask_list, columns=['filename']),
+                                           directory='.', class_mode=None, batch_size=4)
+    dataset_aug = tf.data.Dataset.from_tensor_slices((image_aug, mask_aug))
+    dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
+    dataset = dataset.concatenate(dataset_aug)
     dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)
     dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
     return dataset

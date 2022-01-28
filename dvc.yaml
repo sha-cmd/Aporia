@@ -8,7 +8,10 @@ stages:
     params:
       - k2000.epochs
     metrics:
-      - k2000_not_augmented.json:
+      - k2000.json:
+          cache: false
+          persist: true
+      - dvclive/mIoU.tsv:
           cache: false
           persist: true
     outs:
@@ -17,17 +20,17 @@ stages:
           persist: true
           desc: modeling of the segmentation of images of Cityscapes.
     plots:
-      - k2000_not_augmented/accuracy_multi_plots.csv:
+      - k2000/accuracy_multi_plots.csv:
           cache: false
           persist: true
-          title: Train/Test Accuracy k2000_not_augmented
+          title: Train/Test Accuracy k2000
           template: multi_loss
           x: epoch
           y: accuracy
-      - k2000_not_augmented/loss_multi_plots.csv:
+      - k2000/loss_multi_plots.csv:
           cache: false
           persist: true
-          title: Train/Test Loss k2000_not_augmented
+          title: Train/Test Loss k2000
           template: multi_loss
           x: epoch
           y: loss

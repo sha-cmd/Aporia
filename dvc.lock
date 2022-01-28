@@ -6,18 +6,24 @@ stages:
     cmd: python src/prepare_masks.py
   k2000:
     cmd: python src/deeplabv3_plus.py
+    params:
+      params.yaml:
+        k2000.epochs: 12
     outs:
-    - path: k2000_not_augmented.json
-      md5: 3adcb8416ba9291868dfa18bc0e20034
-      size: 160
-    - path: k2000_not_augmented/accuracy_multi_plots.csv
-      md5: 2713c3d1226781ad065c8eade36b46ef
-      size: 289
-    - path: k2000_not_augmented/loss_multi_plots.csv
-      md5: 3f77959b75cac855ef60d6921eb395a4
-      size: 281
+    - path: dvclive/mIoU.tsv
+      md5: 0ae4f2d2a7c146b0ad8ff722e94789a3
+      size: 59
+    - path: k2000.json
+      md5: cc83dff79fbf284f85ff1ea214391fda
+      size: 161
+    - path: k2000/accuracy_multi_plots.csv
+      md5: 197e7e6ecbf7aeacc7145a0bbdf73422
+      size: 1050
+    - path: k2000/loss_multi_plots.csv
+      md5: a279c612cf7899c3b5d4b1bdd0e7f0f0
+      size: 1046
     - path: models/k2000
-      md5: 89c372d3f902f0ff1fe635cee27aa133.dir
+      md5: d0638784d9fd926b8098695674055d90.dir
       size: 146545383
       nfiles: 4
   kit:
