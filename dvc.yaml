@@ -5,10 +5,30 @@ stages:
     cmd: python src/prepare_masks.py
   k2000:
     cmd: python src/deeplabv3_plus.py
+    metrics:
+      - k2000_not_augmented.json:
+          cache: false
+          persist: true
     outs:
       - models/k2000:
           cache: false
-          persist: false
+          persist: true
           desc: modeling of the segmentation of images of Cityscapes.
+    plots:
+      - k2000_not_augmented/accuracy_multi_plots.csv:
+          cache: false
+          persist: true
+          title: Train/Test Accuracy k2000_not_augmented
+          template: multi_loss
+          x: epoch
+          y: accuracy
+
+      - k2000_not_augmented/loss_multi_plots.csv:
+          cache: false
+          persist: true
+          title: Train/Test Loss k2000_not_augmented
+          template: multi_loss
+          x: epoch
+          y: loss
   kit:
     cmd: python src/inference.py

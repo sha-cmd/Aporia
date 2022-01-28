@@ -1,9 +1,10 @@
 
 import os
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import yaml
+import multi_plots as mps
 
+from dvclive.keras import DvcLiveCallback
 from glob import glob
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -12,6 +13,7 @@ from tools import data_generator
 
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
+    data_mix = str(params['k2000']['data_mix'])
     epochs = int(params['k2000']['epochs'])
 
 train_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
@@ -111,7 +113,7 @@ model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
-callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
+callback = [DvcLiveCallback(path="./k2000_" + data_mix), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 model.compile(
     optimizer=optimizer,
     loss=loss,
@@ -119,30 +121,8 @@ model.compile(
 )
 
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
-#model.save('models/k2000')
+model.save('models/k2000')
 
-# Lignes de charts à orchestrer via DVC Studio et Log de Keras pour représentation on the net !
-plt.plot(history.history["loss"])
-plt.title("Training Loss")
-plt.ylabel("loss")
-plt.xlabel("epoch")
-plt.savefig("model_plots/train_loss.jpg")
-
-plt.plot(history.history["accuracy"])
-plt.title("Training Accuracy")
-plt.ylabel("accuracy")
-plt.xlabel("epoch")
-plt.savefig("model_plots/train_acc.jpg")
-
-plt.plot(history.history["val_loss"])
-plt.title("Validation Loss")
-plt.ylabel("val_loss")
-plt.xlabel("epoch")
-plt.savefig("model_plots/val_loss.jpg")
-
-plt.plot(history.history["val_accuracy"])
-plt.title("Validation Accuracy")
-plt.ylabel("val_accuracy")
-plt.xlabel("epoch")
-plt.savefig("model_plots/val_acc.jpg")
+# Création des plots
+mps.main()
 
