@@ -24,7 +24,6 @@ stages:
           template: multi_loss
           x: epoch
           y: accuracy
-
       - k2000_not_augmented/loss_multi_plots.csv:
           cache: false
           persist: true
@@ -32,5 +31,6 @@ stages:
           template: multi_loss
           x: epoch
           y: loss
+
   kit:
     cmd: python src/inference.py
