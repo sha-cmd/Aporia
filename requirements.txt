@@ -43,6 +43,8 @@ grandalf==0.6
 grpcio==1.43.0
 h5py==3.6.0
 idna==3.3
+imageio==2.14.1
+imgaug==0.4.0
 importlib-metadata==4.10.1
 importlib-resources==5.4.0
 keras==2.7.0
@@ -58,6 +60,7 @@ networkx==2.6.3
 numpy==1.22.1
 oauthlib==3.1.1
 opencv-contrib-python==4.5.5.62
+opencv-python==4.5.5.62
 opt-einsum==3.3.0
 packaging==21.3
 pandas==1.4.0
@@ -80,6 +83,7 @@ python-dateutil==2.8.2
 python-fsutil==0.6.0
 python-slugify==5.0.2
 pytz==2021.3
+PyWavelets==1.2.0
 PyYAML==6.0
 requests==2.27.1
 requests-oauthlib==1.3.0
@@ -87,8 +91,10 @@ rich==11.0.0
 rsa==4.8
 ruamel.yaml==0.17.20
 ruamel.yaml.clib==0.2.6
+scikit-image==0.19.1
 scipy==1.7.3
 scmrepo==0.0.7
+Shapely==1.8.0
 shortuuid==1.0.8
 shtab==1.5.3
 six==1.16.0
@@ -102,6 +108,7 @@ tensorflow-estimator==2.7.0
 tensorflow-io-gcs-filesystem==0.23.1
 termcolor==1.1.0
 text-unidecode==1.3
+tifffile==2021.11.2
 toml==0.10.2
 tqdm==4.62.3
 typing_extensions==4.0.1
