@@ -23,6 +23,7 @@ distro==1.6.0
 dpath==2.0.5
 dulwich==0.20.32
 dvc==2.9.3
+dvclive==0.4.6
 flatbuffers==2.0
 flatten-dict==0.4.2
 flufl.lock==7.0
