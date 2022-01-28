@@ -24,7 +24,6 @@ def guineapig():
         h = dfl.at[0, 'imgHeight']
         w = dfl.at[0, 'imgWidth']
 
-
         img_mask = np.zeros(np.hstack((h, w)), dtype='uint8')
         for poly_num in range(len(dfl)):
             label = dfl.at[poly_num, 'objects']['label']
