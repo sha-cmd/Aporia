@@ -84,9 +84,11 @@ def mIoU(images_list, masks_list, model):
         res.append(m.result().numpy())
     return res
 
+
 """
 ### Inference on Test Images
 """
 
 plot_predictions(test_images[:4], colormap, model=history)
-print(mIoU(test_images[:4], test_masks[:4], model=history))
+res = mIoU(test_images[:4], test_masks[:4], model=history)
+print(sum(res)/len(res))
