@@ -6,6 +6,7 @@ from tools import DATA_DIR
 from tools import NUM_TRAIN_IMAGES
 from tools import NUM_VAL_IMAGES
 
+
 class ModelVariables:
     def __init__(self):
         print('Variables Init')
