@@ -10,18 +10,18 @@ stages:
       params.yaml:
         k2000.epochs: 1
     outs:
-    - path: dvclive/mIoU_k2000.tsv
-      md5: 8d956eb63751de3f1f1f45160a0a41f5
-      size: 65
     - path: k2000.json
-      md5: 9b08616622e35c4477266e4cb9733981
+      md5: 07e2e066d183970fed06c9bc332f920f
       size: 160
     - path: k2000/accuracy_multi_plots.csv
-      md5: 18e57042d28ec809851d1b3b4fd2f945
-      size: 121
+      md5: 72eefee96aad5c6c946392a094d22b98
+      size: 120
     - path: k2000/loss_multi_plots.csv
-      md5: 44aba919ef1388a32236c640877a6837
-      size: 116
+      md5: b61b07872097fb7a6538080d5b9e5ed5
+      size: 117
+    - path: k2000/mIoU.csv
+      md5: 9af09ec06887ed893c32d6ee5b96743a
+      size: 3878
     - path: models/k2000
       md5: d0638784d9fd926b8098695674055d90.dir
       size: 146545383
@@ -32,18 +32,18 @@ stages:
     cmd: python src/U-Net_Xception.py
     outs:
     - path: dolorean.json
-      md5: de2f5c85fd83975ed177cf3bbd7dcbd6
-      size: 161
+      md5: e19714ea283f3ba6e12dca8a29c51130
+      size: 159
     - path: dolorean/accuracy_multi_plots.csv
-      md5: f43d8253df99df09c290b95593845e01
-      size: 121
+      md5: 2d79e01ab3f75cc2c72db43de9609a59
+      size: 119
     - path: dolorean/loss_multi_plots.csv
-      md5: 0d54aea50b6a4fda6496159fc29bd0fc
-      size: 117
-    - path: dvclive/mIoU_dolorean.tsv
-      md5: 72269e7e647d56cd304460145a47024e
-      size: 68
+      md5: 714c4f582068b5ec2e059f4172885034
+      size: 116
+    - path: dolorean/mIoU.csv
+      md5: cfa27b37329ac98180919dfdf39c0c32
+      size: 3881
     - path: models/dolorean
-      md5: fd152c636faa39c40d7915ebc5e57b13.dir
+      md5: 012ccd31d61c1b2847f85bab7b69a6f4.dir
       size: 26692510
       nfiles: 4

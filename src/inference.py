@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import cv2
 import os
@@ -63,21 +64,19 @@ def plot_predictions(images_list, colormap, model):
         )
 
 
-def mIoU(images_list, masks_list, model):
+def mIoU(image_file, mask_file, model):
     res = []
-    for image_file, mask_file in zip(images_list, masks_list):
-        image_tensor = read_image(image_file)
-        prediction_mask = infer(image_tensor=image_tensor, model=model)
-        mask_tensor = read_image(mask_file, mask=True)
-        m = tf.keras.metrics.MeanIoU(num_classes=8)
-        print('shape ', prediction_mask.shape, mask_tensor.shape)
-        m.update_state(prediction_mask, mask_tensor)
-        res.append(m.result().numpy())
+    #for image_file, mask_file in zip(images_list, masks_list):
+    image_tensor = read_image(image_file)
+    prediction_mask = infer(image_tensor=image_tensor, model=model)
+    mask_tensor = read_image(mask_file, mask=True)
+    m = tf.keras.metrics.MeanIoU(num_classes=8)
+    m.update_state(prediction_mask, mask_tensor)
+    res.append(m.result().numpy())
     return res
 
 
 def dice_coef(y_true, y_pred):
-    #for image_file, mask_file in zip(images_list, masks_list):
     y_true_f = y_true.flatten()
     y_pred_f = y_pred.flatten()
     intersection = np.sum(y_true_f * y_pred_f)
@@ -88,11 +87,11 @@ def dice_coef(y_true, y_pred):
 def dice_coef_multilabel(y_true, y_pred, numLabels):
     dice = 0
     for index in range(numLabels):
-        dice += dice_coef(y_true[:,:,:,index], y_pred[:,:,:,index])
-    return dice/numLabels  # taking average
+        dice += dice_coef(y_true[:, :, :, index], y_pred[:, :, :, index])
+    return dice/numLabels
 
 
-def main(name="aucun"):
+def main(name="k2000"):
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
     if name == "k2000":
@@ -109,10 +108,18 @@ def main(name="aucun"):
     colormap = colormap.astype(np.uint8)
 
 #    plot_predictions(test_images[:4], colormap, model=history)
-    res = mIoU(test_images[:12], test_masks[:12], model=history)
-    avg_res = sum(res) / len(res)
-    print(avg_res)
-    live.log("mIoU_" + name, avg_res)
+    nb = 100
+    for i in range(nb):
+        if (i % 20) == 0:
+            print(f"images traité pour le mIoU : {i}\nimages restantes pour le mIoU {i-nb}\n")
+        res = mIoU(test_images[i+1], test_masks[i+1], model=history)
+        avg_res = sum(res) / len(res)
+        live.log("mIoU", avg_res)
+        live.next_step()
+    df = pd.read_csv("dvclive/mIoU.tsv", sep='\t')
+    df = df.rename(columns={'step': 'pics'})
+    df.to_csv(name + "/mIoU.csv", sep=',', index_label='index')
+
 
     # Dice coefficient section
     # need a serious code mutation

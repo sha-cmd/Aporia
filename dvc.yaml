@@ -11,15 +11,18 @@ stages:
       - k2000.json:
           cache: false
           persist: true
-      - dvclive/mIoU_k2000.tsv:
-          cache: false
-          persist: true
     outs:
       - models/k2000:
           cache: false
           persist: true
           desc: modeling of the segmentation of images of Cityscapes.
     plots:
+      - k2000/mIoU.csv:
+          cache: false
+          persist: true
+          title: mIoU k2000
+          x: pics
+          y: mIoU
       - k2000/accuracy_multi_plots.csv:
           cache: false
           persist: true
@@ -40,15 +43,18 @@ stages:
       - dolorean.json:
           cache: false
           persist: true
-      - dvclive/mIoU_dolorean.tsv:
-          cache: false
-          persist: true
     outs:
       - models/dolorean:
           cache: false
           persist: true
           desc: modeling of the segmentation of images of Cityscapes.
     plots:
+      - dolorean/mIoU.csv:
+          cache: false
+          persist: true
+          title: mIoU dolorean
+          x: pics
+          y: mIoU
       - dolorean/accuracy_multi_plots.csv:
           cache: false
           persist: true
