@@ -91,7 +91,7 @@ def dice_coef_multilabel(y_true, y_pred, numLabels):
     return dice/numLabels
 
 
-def main(name="k2000"):
+def main(name="aucun"):
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
     if name == "k2000":
@@ -119,6 +119,8 @@ def main(name="k2000"):
     df = pd.read_csv("dvclive/mIoU.tsv", sep='\t')
     df = df.rename(columns={'step': 'pics'})
     df.to_csv(name + "/mIoU.csv", sep=',', index_label='index')
+    ax = df['mIoU'].apply(lambda x: round(x, 5)).plot.kde()
+    plt.savefig(name + '/mIoU_density.jpg')
 
 
     # Dice coefficient section
