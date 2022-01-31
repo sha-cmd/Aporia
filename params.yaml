@@ -1,5 +1,5 @@
 k2000:
-  epochs: 12
+  epochs: 1
   data_mix: original_version
   name: k2000
 dolorean:
