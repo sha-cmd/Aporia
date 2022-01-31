@@ -130,7 +130,7 @@ history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, c
 #model.save('models/' + name)
 
 # Création des plots
-mps.main()
+mps.main(name)
 
 # Création de la métriques sur jeu de test
-irnc.main()
+irnc.main(name)
