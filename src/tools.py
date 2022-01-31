@@ -1,7 +1,5 @@
 import pandas as pd
 import tensorflow as tf
-import numpy as np
-import imgaug.augmenters as iaa
 
 IMAGE_SIZE = 256
 BATCH_SIZE = 4
@@ -54,7 +52,7 @@ def load_data(image_list, mask_list):
     return image, mask
 
 
-def data_generator(image_list, mask_list):
+def data_original_version(image_list, mask_list):
     """Retourne les données telles quelles"""
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
     dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)

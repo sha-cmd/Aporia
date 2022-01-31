@@ -9,8 +9,7 @@ from glob import glob
 from tensorflow import keras
 from tensorflow.keras import layers
 from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
-from tools import data_generator
-from tools import data_augmented
+from objects.DataGenerator import DataGenerator
 
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
@@ -42,10 +41,10 @@ for i in range(len(val_images)):
         .split('/')[-1].split('_gtFine_polygons_octogroups')[0]
 print('Validation images correspond to validation masks')
 
-data_blend = {'not_augmented': data_generator,
-              'augmented': data_augmented}
-train_dataset = data_blend[data_mix](train_images, train_masks)
-val_dataset = data_blend[data_mix](val_images, val_masks)
+data_blend = DataGenerator()
+
+train_dataset = data_blend(train_images, train_masks, data_mix)
+val_dataset = data_blend(val_images, val_masks, data_mix)
 
 print("Train Dataset:", train_dataset)
 print("Val Dataset:", val_dataset)
@@ -127,7 +126,7 @@ model.compile(
 )
 
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
-model.save('models/k2000')
+#model.save('models/k2000')
 
 # Création des plots
 mps.main()
