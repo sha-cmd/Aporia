@@ -32,6 +32,7 @@ def main(name="aucun"):
         print(e)
 
     # Itération à l’intérieur de notre dictionnaire de dictionnaire
+    print("Traitement des fichiers de métrique et de coût")
     for key_dir, metrics in dirs_dict.items():
         for key_metric, learning in metrics.items():
             # Nous réalisons des actions de transformation
@@ -63,7 +64,7 @@ def main(name="aucun"):
                 x: epoch\n\
                 y: {key_metric}\n\
                 \n")
-
+    print("Traitement de fichier terminé")
 
 if __name__ == "__main__":
     main()
