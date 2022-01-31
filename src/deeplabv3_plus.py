@@ -15,6 +15,7 @@ with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
     data_mix = str(params['k2000']['data_mix'])
     epochs = int(params['k2000']['epochs'])
+    name = str(params['k2000']['name'])
 
 train_images = sorted(
     glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))#[:NUM_TRAIN_IMAGES]
@@ -118,7 +119,7 @@ model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
-callback = [DvcLiveCallback(path="./k2000"), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
+callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 model.compile(
     optimizer=optimizer,
     loss=loss,
@@ -126,7 +127,7 @@ model.compile(
 )
 
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
-#model.save('models/k2000')
+#model.save('models/' + name)
 
 # Création des plots
 mps.main()

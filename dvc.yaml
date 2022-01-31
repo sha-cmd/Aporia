@@ -11,7 +11,7 @@ stages:
       - k2000.json:
           cache: false
           persist: true
-      - dvclive/mIoU.tsv:
+      - dvclive/mIoU_k2000.tsv:
           cache: false
           persist: true
     outs:
@@ -34,6 +34,34 @@ stages:
           template: multi_loss
           x: epoch
           y: loss
-
+  dolorean:
+    cmd: python src/U-Net_Xception.py
+    metrics:
+      - dolorean.json:
+          cache: false
+          persist: true
+      - dvclive/mIoU_dolorean.tsv:
+          cache: false
+          persist: true
+    outs:
+      - models/dolorean:
+          cache: false
+          persist: true
+          desc: modeling of the segmentation of images of Cityscapes.
+    plots:
+      - dolorean/accuracy_multi_plots.csv:
+          cache: false
+          persist: true
+          title: Train/Test Accuracy dolorean
+          template: multi_loss
+          x: epoch
+          y: accuracy
+      - dolorean/loss_multi_plots.csv:
+          cache: false
+          persist: true
+          title: Train/Test Loss dolorean
+          template: multi_loss
+          x: epoch
+          y: loss
   kit:
     cmd: python src/inference.py

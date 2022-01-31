@@ -1,10 +1,15 @@
 import os
 import glob
 import pandas as pd
+import sys
 
-
-def main():
-    dirs = glob.glob('k2000')
+def main(name="aucun"):
+    if name == "k2000":
+        dirs = glob.glob('k2000')
+    elif name == "dolorean":
+        dirs = glob.glob('dolorean')
+    else:
+        sys.exit()
     dirs_dict = {}
     for dir in dirs:
         metrics_dict = {}

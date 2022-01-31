@@ -3,19 +3,20 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import os
+import sys
 
 from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
 from glob import glob
-from tools import DATA_DIR
+from tools import DATA_DIR, IMAGE_SIZE
 from dvclive import Live
 
 live = Live()
 
 
 def infer(model, image_tensor):
-    predictions = model.predict(np.expand_dims((image_tensor), axis=0))
+    predictions = model.predict(np.expand_dims(image_tensor, axis=0))
     predictions = np.squeeze(predictions)
     predictions = np.argmax(predictions, axis=2)
     return predictions
@@ -69,17 +70,37 @@ def mIoU(images_list, masks_list, model):
         prediction_mask = infer(image_tensor=image_tensor, model=model)
         mask_tensor = read_image(mask_file, mask=True)
         m = tf.keras.metrics.MeanIoU(num_classes=8)
+        print('shape ', prediction_mask.shape, mask_tensor.shape)
         m.update_state(prediction_mask, mask_tensor)
         res.append(m.result().numpy())
     return res
 
 
-def main():
+def dice_coef(y_true, y_pred):
+    #for image_file, mask_file in zip(images_list, masks_list):
+    y_true_f = y_true.flatten()
+    y_pred_f = y_pred.flatten()
+    intersection = np.sum(y_true_f * y_pred_f)
+    smooth = 0.0001
+    return (2. * intersection + smooth) / (np.sum(y_true_f) + np.sum(y_pred_f) + smooth)
+
+
+def dice_coef_multilabel(y_true, y_pred, numLabels):
+    dice = 0
+    for index in range(numLabels):
+        dice += dice_coef(y_true[:,:,:,index], y_pred[:,:,:,index])
+    return dice/numLabels  # taking average
+
+
+def main(name="aucun"):
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
-
-    history = keras.models.load_model('models/k2000')
-
+    if name == "k2000":
+        history = keras.models.load_model('models/k2000')
+    elif name == "dolorean":
+        history = keras.models.load_model('models/dolorean')
+    else:
+        sys.exit()
     # Loading the Colormap
     colormap = loadmat(
         "src/city_colormap.mat"
@@ -88,10 +109,30 @@ def main():
     colormap = colormap.astype(np.uint8)
 
 #    plot_predictions(test_images[:4], colormap, model=history)
-    res = mIoU(test_images[:], test_masks[:], model=history)
+    res = mIoU(test_images[:12], test_masks[:12], model=history)
     avg_res = sum(res) / len(res)
     print(avg_res)
-    live.log("mIoU", avg_res)
+    live.log("mIoU_" + name, avg_res)
+
+    # Dice coefficient section
+    # need a serious code mutation
+    # to correspond to the needs of my function
+    # num_class = 8
+    # image_tensor = read_image(test_images[1])
+    # imgA = infer(image_tensor=image_tensor, model=history)
+    # imgB = Image.open(test_masks[1]).resize((IMAGE_SIZE, IMAGE_SIZE))  # np.random.randint(low=0, high= 2, size=(5, 64, 64, num_class) )
+    #
+    # plt.imshow(imgA)  # for 0th image, class 0 map
+    # plt.show()
+    #
+    # plt.imshow(imgB)  # for 0th image, class 0 map
+    # plt.show()
+    #
+    # dice_score = dice_coef_multilabel(imgA, imgB, num_class)
+    # print(f'For A and B {dice_score}')
+    #
+    # dice_score = dice_coef_multilabel(imgA, imgA, num_class)
+    # print(f'For A and A {dice_score}')
 
 
 if __name__ == "__main__":
