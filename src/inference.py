@@ -7,7 +7,8 @@ import os
 import sys
 import seaborn as sns
 
-from PIL import Image
+from objects.WeightedCrossEntropy import WeightedCrossEntropy
+from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
@@ -105,13 +106,15 @@ def plot(model="aucun", name="aucun"):
     plt.savefig(model + '/' + name + '_density.jpg')
 
 
-def main(model="aucun"):
+def main(model="k2000"):
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-500:]
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-500:]
+    metrics_wce = WeightedCrossEntropy(beta=0.7)
+    metrics_bce = BalancedCrossEntropy(beta=0.5)
     if model == "k2000":
-        history = keras.models.load_model('models/k2000')
+        history = keras.models.load_model('models/k2000', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce})
     elif model == "dolorean":
-        history = keras.models.load_model('models/dolorean')
+        history = keras.models.load_model('models/dolorean', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce})
     else:
         sys.exit()
     # Loading the Colormap

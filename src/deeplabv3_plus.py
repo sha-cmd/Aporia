@@ -4,6 +4,8 @@ import yaml
 import multi_plots as mps
 import inference as irnc
 
+from objects.WeightedCrossEntropy import WeightedCrossEntropy
+from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from dvclive.keras import DvcLiveCallback
 from glob import glob
 from tensorflow import keras
@@ -119,16 +121,18 @@ def DeeplabV3Plus(image_size, num_classes):
 model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+metrics_wce = WeightedCrossEntropy(beta=0.7)
+metrics_bce = BalancedCrossEntropy(beta=0.5)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
 callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 model.compile(
     optimizer=optimizer,
     loss=loss,
-    metrics=["accuracy"],
+    metrics=["accuracy", metrics_wce, metrics_bce],
 )
 
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
-#model.save('models/' + name)
+model.save('models/' + name)
 
 # Création des plots
 mps.main(name)

@@ -3,6 +3,8 @@ import yaml
 import multi_plots as mps
 import inference as irnc
 import tensorflow as tf
+from objects.WeightedCrossEntropy import WeightedCrossEntropy
+from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from objects.DataGenerator import DataGenerator
 from glob import glob
 from tools import DATA_DIR, IMAGE_SIZE, BATCH_SIZE, NUM_CLASSES
@@ -107,9 +109,11 @@ print("Val Dataset:", val_dataset)
 
 loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
+metrics_wce = WeightedCrossEntropy(beta=0.7)
+metrics_bce = BalancedCrossEntropy(beta=0.5)
 callbacks = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 
-model.compile(optimizer=optimizer, loss=loss, metrics=["accuracy"])
+model.compile(optimizer=optimizer, loss=loss, metrics=["accuracy", metrics_wce, metrics_bce])
 model.fit(train_dataset, epochs=epochs, validation_data=val_dataset, callbacks=callbacks)
 
 model.save('models/' + name)
