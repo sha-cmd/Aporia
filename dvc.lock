@@ -6,33 +6,38 @@ stages:
     cmd: python src/prepare_masks.py
   k2000:
     cmd: python src/deeplabv3_plus.py
+    deps:
+    - path: data/
+      md5: fdbef0d4c685ae1a1b7bc54110a30dfa.dir
+      size: 12584850580
+      nfiles: 35004
     params:
       params.yaml:
-        k2000.epochs: 9
+        k2000.epochs: 1
     outs:
     - path: k2000.json
-      md5: 70715e69f1e59827204efa04bfea27d4
-      size: 286
+      md5: ac7f40169dc5f7cd7edd0672ca60f522
+      size: 291
     - path: k2000/Dice_coefficient.csv
-      md5: ead90e6e2bb3ab707671f8088ea716a3
-      size: 2621
+      md5: 8de3cd1c19b28431ebfe60a25e5291a7
+      size: 2619
     - path: k2000/Dice_coefficient_density.jpg
-      md5: d878d09492e1020887bc02fa3bd3d50e
-      size: 17157
+      md5: c785336afa4d2ff3a7167517b9194a09
+      size: 16194
     - path: k2000/accuracy_multi_plots.csv
-      md5: a4fa3894d36fe995604ef1572ad8ba8a
-      size: 791
+      md5: bf6a7bd0d769b170ad573ff28da9a531
+      size: 119
     - path: k2000/loss_multi_plots.csv
-      md5: e2d1cb412022858934dff4e292fc7aeb
-      size: 786
+      md5: 9113bcde0a9d4d251ed69c88e16d6507
+      size: 117
     - path: k2000/mIoU.csv
-      md5: 9f76aa2abf2adfe3d29554d7a3e5bff9
-      size: 2501
+      md5: 7cf7991e1e24e75c24e69b24c1309638
+      size: 2496
     - path: k2000/mIoU_density.jpg
-      md5: 6e9c69173e653be114c656caff423c44
-      size: 15484
+      md5: 60be835feb954cca8d6faab1b63f16cf
+      size: 15783
     - path: models/k2000
-      md5: 1b728c14ddafb58ce85724f1987ef53f.dir
+      md5: e35b0ca55999a0f73654478bee8f9c26.dir
       size: 146546615
       nfiles: 4
   kit:
