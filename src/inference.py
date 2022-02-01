@@ -5,6 +5,7 @@ import tensorflow as tf
 import cv2
 import os
 import sys
+import seaborn as sns
 
 from scipy.io import loadmat
 from tensorflow import keras
@@ -119,7 +120,12 @@ def main(name="aucun"):
     df = pd.read_csv("dvclive/mIoU.tsv", sep='\t')
     df = df.rename(columns={'step': 'pics'})
     df.to_csv(name + "/mIoU.csv", sep=',', index_label='index')
-    ax = df['mIoU'].apply(lambda x: round(x, 5)).plot.kde()
+    data = df['mIoU'].apply(lambda x: round(x, 5))
+    sns.distplot(data, hist=False)
+    plt.xlabel('mIoU')
+    plt.ylabel('Density')
+    plt.title('Density mIoU ' + name)
+    plt.tight_layout()
     plt.savefig(name + '/mIoU_density.jpg')
 
 
