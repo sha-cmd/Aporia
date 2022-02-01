@@ -16,6 +16,7 @@ with open("params.yaml", 'r') as fd:
     data_mix = str(params['dolorean']['data_mix'])
     epochs = int(params['dolorean']['epochs'])
     name = str(params['dolorean']['name'])
+    test_size = int(params['dolorean']['test_size'])
 
 def get_model(img_size, num_classes):
     inputs = keras.Input(shape=img_size + (3,))
@@ -70,9 +71,9 @@ keras.backend.clear_session()
 model = get_model((IMAGE_SIZE, IMAGE_SIZE), NUM_CLASSES)
 
 train_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[:- test_size]
 train_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[:- test_size]
 val_images = sorted(
     glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))
 val_masks = sorted(

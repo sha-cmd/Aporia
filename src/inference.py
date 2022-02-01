@@ -7,6 +7,7 @@ import os
 import sys
 import seaborn as sns
 
+from PIL import Image
 from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
@@ -67,7 +68,6 @@ def plot_predictions(images_list, colormap, model):
 
 def mIoU(image_file, mask_file, model):
     res = []
-    #for image_file, mask_file in zip(images_list, masks_list):
     image_tensor = read_image(image_file)
     prediction_mask = infer(image_tensor=image_tensor, model=model)
     mask_tensor = read_image(mask_file, mask=True)
@@ -88,16 +88,29 @@ def dice_coef(y_true, y_pred):
 def dice_coef_multilabel(y_true, y_pred, numLabels):
     dice = 0
     for index in range(numLabels):
-        dice += dice_coef(y_true[:, :, :, index], y_pred[:, :, :, index])
+        dice += dice_coef(np.where(y_true == index, 1, 0), np.where(y_pred == index, 1, 0))
     return dice/numLabels
 
 
-def main(name="aucun"):
-    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/test/**/*.png"), recursive=True))
-    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/test/**/*octogroups.png"), recursive=True))
-    if name == "k2000":
+def plot(model="aucun", name="aucun"):
+    df = pd.read_csv("dvclive/" + name + ".tsv", sep='\t')
+    df = df.rename(columns={'step': 'pics'})
+    df.to_csv(model + "/" + name + ".csv", sep=',', index_label='index')
+    data = df[name].apply(lambda x: round(x, 5))
+    sns.displot(data, kind='kde')
+    plt.xlabel(name)
+    plt.ylabel('Density')
+    plt.title('Density ' + name + " " + model)
+    plt.tight_layout()
+    plt.savefig(model + '/' + name + '_density.jpg')
+
+
+def main(model="aucun"):
+    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-500:]
+    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-500:]
+    if model == "k2000":
         history = keras.models.load_model('models/k2000')
-    elif name == "dolorean":
+    elif model == "dolorean":
         history = keras.models.load_model('models/dolorean')
     else:
         sys.exit()
@@ -115,40 +128,22 @@ def main(name="aucun"):
             print(f"images traité pour le mIoU : {i}\nimages restantes pour le mIoU {i-nb}\n")
         res = mIoU(test_images[i+1], test_masks[i+1], model=history)
         avg_res = sum(res) / len(res)
-        live.log("mIoU", avg_res)
+        live.log("mIoU", round(avg_res, 2))
         live.next_step()
-    df = pd.read_csv("dvclive/mIoU.tsv", sep='\t')
-    df = df.rename(columns={'step': 'pics'})
-    df.to_csv(name + "/mIoU.csv", sep=',', index_label='index')
-    data = df['mIoU'].apply(lambda x: round(x, 5))
-    sns.distplot(data, hist=False)
-    plt.xlabel('mIoU')
-    plt.ylabel('Density')
-    plt.title('Density mIoU ' + name)
-    plt.tight_layout()
-    plt.savefig(name + '/mIoU_density.jpg')
+    plot(model, 'mIoU')
 
-
-    # Dice coefficient section
-    # need a serious code mutation
-    # to correspond to the needs of my function
-    # num_class = 8
-    # image_tensor = read_image(test_images[1])
-    # imgA = infer(image_tensor=image_tensor, model=history)
-    # imgB = Image.open(test_masks[1]).resize((IMAGE_SIZE, IMAGE_SIZE))  # np.random.randint(low=0, high= 2, size=(5, 64, 64, num_class) )
-    #
-    # plt.imshow(imgA)  # for 0th image, class 0 map
-    # plt.show()
-    #
-    # plt.imshow(imgB)  # for 0th image, class 0 map
-    # plt.show()
-    #
-    # dice_score = dice_coef_multilabel(imgA, imgB, num_class)
-    # print(f'For A and B {dice_score}')
-    #
-    # dice_score = dice_coef_multilabel(imgA, imgA, num_class)
-    # print(f'For A and A {dice_score}')
-
+    num_class = 8
+    for i in range(nb):
+        if (i % 20) == 0:
+            print(f"images traité pour le Dice : {i}\nimages restantes pour le Dice {i - nb}\n")
+        image_tensor = read_image(test_images[i])
+        imgA = infer(image_tensor=image_tensor, model=history)
+        imgB = read_image(test_masks[i], mask=True)
+        imgB = np.array(imgB.numpy().reshape(256, 256), dtype='int')
+        dice_score = dice_coef_multilabel(imgA, imgB, num_class)
+        live.log("Dice_coefficient", round(dice_score, 2))
+        live.next_step()
+    plot(model, 'Dice_coefficient')
 
 if __name__ == "__main__":
     main()

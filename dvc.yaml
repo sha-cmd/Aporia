@@ -19,6 +19,9 @@ stages:
       - k2000/mIoU_density.jpg:
           cache: false
           persist: true
+      - k2000/Dice_coefficient_density.jpg:
+          cache: false
+          persist: true
     plots:
       - k2000/mIoU.csv:
           cache: false
@@ -26,6 +29,12 @@ stages:
           title: mIoU k2000
           x: pics
           y: mIoU
+      - k2000/Dice_coefficient.csv:
+          cache: false
+          persist: true
+          title: Dice Coefficient k2000
+          x: pics
+          y: Dice_coefficient
       - k2000/accuracy_multi_plots.csv:
           cache: false
           persist: true
@@ -54,6 +63,9 @@ stages:
       - dolorean/mIoU_density.jpg:
           cache: false
           persist: true
+      - dolorean/Dice_coefficient_density.jpg:
+          cache: false
+          persist: true
     plots:
       - dolorean/mIoU.csv:
           cache: false
@@ -61,6 +73,12 @@ stages:
           title: mIoU dolorean
           x: pics
           y: mIoU
+      - dolorean/Dice_coefficient.csv:
+          cache: false
+          persist: true
+          title: Dice Coefficient dolorean
+          x: pics
+          y: Dice_coefficient
       - dolorean/accuracy_multi_plots.csv:
           cache: false
           persist: true

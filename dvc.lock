@@ -11,20 +11,26 @@ stages:
         k2000.epochs: 1
     outs:
     - path: k2000.json
-      md5: 34899aa02f94813c85b98420adcecb2d
-      size: 160
+      md5: ddadf7d371e5a46944de91a8a5289771
+      size: 161
+    - path: k2000/Dice_coefficient.csv
+      md5: 90f3580d7b2d4ad651d50f2b196ad98e
+      size: 2617
+    - path: k2000/Dice_coefficient_density.jpg
+      md5: 14b44ddf5e172493d36125905191198b
+      size: 17110
     - path: k2000/accuracy_multi_plots.csv
-      md5: d7d5a68e2c33493fa9ea4ffefee9b8c4
+      md5: cec17323732296297ceefd5a0c389341
       size: 121
     - path: k2000/loss_multi_plots.csv
-      md5: 103848b81e1680b62de46a2d19073888
-      size: 116
+      md5: cddef3f8538b1adacba30d101d6dfb3c
+      size: 117
     - path: k2000/mIoU.csv
-      md5: d7cc2dd9ad8e8c600300b87f5d28f5ed
-      size: 3883
+      md5: 76a9ef068f9a4dd5169138350d40e46b
+      size: 2490
     - path: k2000/mIoU_density.jpg
-      md5: f5612deef44e0f5d1120e7dec958650a
-      size: 16944
+      md5: 8ea030d17369c0ed5852097cb31239ce
+      size: 15639
     - path: models/k2000
       md5: d0638784d9fd926b8098695674055d90.dir
       size: 146545383
@@ -35,21 +41,27 @@ stages:
     cmd: python src/U-Net_Xception.py
     outs:
     - path: dolorean.json
-      md5: efb28d1d50d6123b5449b84acdff21cc
-      size: 160
+      md5: 6b12b1247c9db966bedc3caf48e3d8ee
+      size: 161
+    - path: dolorean/Dice_coefficient.csv
+      md5: 8917f2b7e1880ea39c18c65a68ed1e1b
+      size: 2616
+    - path: dolorean/Dice_coefficient_density.jpg
+      md5: 7c7d99fd47fcb27d60297a2d11987d2d
+      size: 17367
     - path: dolorean/accuracy_multi_plots.csv
-      md5: acae653e2d4c78d020d6e9b12346f3ab
+      md5: 9faa24d68589e94a2555957d1a858e75
       size: 121
     - path: dolorean/loss_multi_plots.csv
-      md5: 70a4d27409c57d7ca1bdf2e78b52cf02
-      size: 116
+      md5: b9751d37656c14d496274878f5a5911e
+      size: 117
     - path: dolorean/mIoU.csv
-      md5: 042c4dffe041a8cdbf6156c884aa982a
-      size: 3888
+      md5: 1e723af885540f0813a7af28022cebcc
+      size: 2498
     - path: dolorean/mIoU_density.jpg
-      md5: 5de66a17f6b08c9796dac5e78cde8fc5
-      size: 17669
+      md5: 1f1524074f845e51d132441781f62103
+      size: 15385
     - path: models/dolorean
-      md5: b604ffd9212655aef68d9060c4519456.dir
-      size: 26692510
+      md5: 8d9b34d0e041ee0e143a67e40660e9c9.dir
+      size: 26692474
       nfiles: 4
