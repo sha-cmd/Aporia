@@ -1,10 +1,11 @@
 k2000:
-  epochs: 1
+  epochs: 9
   data_mix: original_version
   name: k2000
-  test_size: 100
+  test_size: 500
+
 dolorean:
-  epochs: 1
+  epochs: 9
   data_mix: original_version
   name: dolorean
-  test_size: 100
+  test_size: 500

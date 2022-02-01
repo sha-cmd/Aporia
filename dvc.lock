@@ -8,31 +8,31 @@ stages:
     cmd: python src/deeplabv3_plus.py
     params:
       params.yaml:
-        k2000.epochs: 1
+        k2000.epochs: 9
     outs:
     - path: k2000.json
-      md5: 4882c245c44a71c3ffdc2cfd621f4a6b
-      size: 290
+      md5: 70715e69f1e59827204efa04bfea27d4
+      size: 286
     - path: k2000/Dice_coefficient.csv
-      md5: bc3a7696446babaf49f99fc0b39ba378
-      size: 2618
+      md5: ead90e6e2bb3ab707671f8088ea716a3
+      size: 2621
     - path: k2000/Dice_coefficient_density.jpg
-      md5: 94e9482593a0f87ccd694f5689c99245
-      size: 16924
+      md5: d878d09492e1020887bc02fa3bd3d50e
+      size: 17157
     - path: k2000/accuracy_multi_plots.csv
-      md5: c3ebbf16d700d822ed833a5c74b46abd
-      size: 120
+      md5: a4fa3894d36fe995604ef1572ad8ba8a
+      size: 791
     - path: k2000/loss_multi_plots.csv
-      md5: d53498c1d06878fbfce8536a89a949d0
-      size: 117
+      md5: e2d1cb412022858934dff4e292fc7aeb
+      size: 786
     - path: k2000/mIoU.csv
-      md5: 742ca5796a74c811de266e79cce6089b
-      size: 2500
+      md5: 9f76aa2abf2adfe3d29554d7a3e5bff9
+      size: 2501
     - path: k2000/mIoU_density.jpg
-      md5: 71d84abb8c53741b4c7ddd1d17bce00e
-      size: 15183
+      md5: 6e9c69173e653be114c656caff423c44
+      size: 15484
     - path: models/k2000
-      md5: 8083cb56bb9663e9eb4a65afc2ab79f6.dir
+      md5: 1b728c14ddafb58ce85724f1987ef53f.dir
       size: 146546615
       nfiles: 4
   kit:
@@ -41,27 +41,27 @@ stages:
     cmd: python src/U-Net_Xception.py
     outs:
     - path: dolorean.json
-      md5: 135a0f3479adf9f28a1c62afa3cfca87
-      size: 295
+      md5: d52ae655c9fed5f0e0ae91def439f080
+      size: 297
     - path: dolorean/Dice_coefficient.csv
-      md5: 7bcab2ce42ed55645e3bc1dcf6bb4be7
-      size: 2619
+      md5: 844ee0d3f7499c9af9c417ec8047db71
+      size: 2621
     - path: dolorean/Dice_coefficient_density.jpg
-      md5: fac5bc57dec5aaa3cb42fe9f431c3927
-      size: 17823
+      md5: e722125b9216c866fcc6ae16841f83b1
+      size: 17921
     - path: dolorean/accuracy_multi_plots.csv
-      md5: 37bfd18f57662501ccbba2e98216b798
-      size: 121
+      md5: db87c2ef48682641c654e213d9643d58
+      size: 791
     - path: dolorean/loss_multi_plots.csv
-      md5: c3726bc5abf25a9b0853e15454df321f
-      size: 117
+      md5: 5dc72e1dd99f96b7a50a04389fd90a25
+      size: 786
     - path: dolorean/mIoU.csv
-      md5: b27ccbbf84331145ecad3b5e385ec228
-      size: 2496
+      md5: 61bc837f040b873fcd904bea34004fa3
+      size: 2500
     - path: dolorean/mIoU_density.jpg
-      md5: a6aab4a41a2ad03c502f330855872208
-      size: 16939
+      md5: 551fdd0f22bd32e88d7c225b02c159e0
+      size: 14897
     - path: models/dolorean
-      md5: 2d41270ade0e93fdc9d05375e7d7b344.dir
+      md5: c7873da2b16a3458de6a19fae0a6715b.dir
       size: 26693746
       nfiles: 4
