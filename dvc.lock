@@ -16,28 +16,28 @@ stages:
         k2000.epochs: 1
     outs:
     - path: k2000.json
-      md5: ac7f40169dc5f7cd7edd0672ca60f522
+      md5: 8dc702e762c29de1a5e2a7f795a30ef5
       size: 291
     - path: k2000/Dice_coefficient.csv
-      md5: 8de3cd1c19b28431ebfe60a25e5291a7
-      size: 2619
+      md5: 3c2db8d7d38c10e2981157aafbbb97db
+      size: 2617
     - path: k2000/Dice_coefficient_density.jpg
-      md5: c785336afa4d2ff3a7167517b9194a09
-      size: 16194
+      md5: 9dc84679dff3bf67f7b0171c79e5de6d
+      size: 17004
     - path: k2000/accuracy_multi_plots.csv
-      md5: bf6a7bd0d769b170ad573ff28da9a531
-      size: 119
+      md5: dc8e42f323c4cecc1ff696a3692dce86
+      size: 120
     - path: k2000/loss_multi_plots.csv
-      md5: 9113bcde0a9d4d251ed69c88e16d6507
+      md5: 22dcfcd04058b4a91ba8b792c554e7f0
       size: 117
     - path: k2000/mIoU.csv
-      md5: 7cf7991e1e24e75c24e69b24c1309638
-      size: 2496
+      md5: 4e7e3d6b4e0042df25f037037172d071
+      size: 2500
     - path: k2000/mIoU_density.jpg
-      md5: 60be835feb954cca8d6faab1b63f16cf
-      size: 15783
+      md5: b4f985b421c1f4f5adb033dc5bb01607
+      size: 16186
     - path: models/k2000
-      md5: e35b0ca55999a0f73654478bee8f9c26.dir
+      md5: 8bad53f8f6c126ddda4f218155850fac.dir
       size: 146546615
       nfiles: 4
   kit:
