@@ -5,8 +5,9 @@ stages:
     cmd: python src/prepare_masks.py
   k2000:
     cmd: python src/deeplabv3_plus.py
-    deps:
-      - data/
+    meta:
+      - data/:
+          cache: true
     params:
       - k2000.epochs
     metrics:
@@ -53,6 +54,9 @@ stages:
           y: loss
   dolorean:
     cmd: python src/U-Net_Xception.py
+    meta:
+      - data/:
+          cache: true
     metrics:
       - dolorean.json:
           cache: false
