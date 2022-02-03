@@ -2,7 +2,7 @@ k2000:
   epochs: 1
   data_mix: original_version
   name: k2000
-  test_size: 500
+  test_size: 100
   optim_type: adam
   learning_rate: 0.001
   wce_beta: 0.7
@@ -12,7 +12,7 @@ dolorean:
   epochs: 1
   data_mix: original_version
   name: dolorean
-  test_size: 500
+  test_size: 100
   optim_type: adam
   learning_rate: 0.001
   wce_beta: 0.7

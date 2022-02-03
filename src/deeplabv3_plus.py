@@ -1,9 +1,13 @@
-import os
-import tensorflow as tf
-import yaml
-import multi_plots as mps
 import inference as irnc
+import multi_plots as mps
+import os
+import pandas as pd
+import tensorflow as tf
+from time import time
+import yaml
 
+from tensorflow.keras.callbacks import Callback
+from tools import optim_pool
 from objects.WeightedCrossEntropy import WeightedCrossEntropy
 from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from dvclive.keras import DvcLiveCallback
@@ -13,26 +17,52 @@ from tensorflow.keras import layers
 from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
 from objects.DataGenerator import DataGenerator
 
+
+class TimingCallback(Callback):
+
+    def __init__(self):
+        super().__init__()
+        self.logs = []
+
+    def on_epoch_begin(self, epoch, logs=None):
+        if logs is None:
+            logs = {}
+        self.starttime = time()
+
+    def on_epoch_end(self, epoch, logs=None):
+        if logs is None:
+            logs = {}
+        self.logs.append(time()-self.starttime)
+
+
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
     data_mix = str(params['k2000']['data_mix'])
     epochs = int(params['k2000']['epochs'])
     name = str(params['k2000']['name'])
     test_size = int(params['k2000']['test_size'])
+    optim_type = str(params['k2000']['optim_type'])
+    learning_rate = float(params['k2000']['learning_rate'])
+    wce_beta = float(params['dolorean']['wce_beta'])
+    bce_beta = float(params['dolorean']['bce_beta'])
 
 train_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[:- test_size]#[:NUM_TRAIN_IMAGES]
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[
+               :- test_size]  # [:NUM_TRAIN_IMAGES]
 train_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[:- test_size]#[:NUM_TRAIN_IMAGES]
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[
+              :- test_size]  # [:NUM_TRAIN_IMAGES]
 val_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))#[:NUM_VAL_IMAGES]
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))  # [:NUM_VAL_IMAGES]
 val_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))#[:NUM_VAL_IMAGES]
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))  # [:NUM_VAL_IMAGES]
 
 print('Found', len(train_images), 'training images')
 print('Found', len(train_masks), 'training masks')
 print('Found', len(val_images), 'validation images')
 print('Found', len(val_masks), 'validation masks')
+
+assert len(train_images) > 0
 
 for i in range(len(train_images)):
     assert train_images[i].split(
@@ -119,23 +149,30 @@ def DeeplabV3Plus(image_size, num_classes):
 
 
 model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
+metrics_wce = WeightedCrossEntropy(beta=wce_beta)
+metrics_bce = BalancedCrossEntropy(beta=bce_beta)
+optimizer = optim_pool(learning_rate=learning_rate)[optim_type]
+cb = TimingCallback()
+callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
 
-loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-metrics_wce = WeightedCrossEntropy(beta=0.7)
-metrics_bce = BalancedCrossEntropy(beta=0.5)
-optimizer = keras.optimizers.Adam(learning_rate=0.001)
-callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 model.compile(
     optimizer=optimizer,
-    loss=loss,
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=["accuracy", metrics_wce, metrics_bce],
 )
 
 history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
 model.save('models/' + name)
 
+# Time log
+df = pd.DataFrame(cb.logs, columns=['time'])
+df.index.name = 'index'
+df.to_csv(name + '/time.csv', index_label='index')
+
 # Création des plots
 mps.main(name)
 
 # Création de la métriques sur jeu de test
 irnc.main(name)
+
+
