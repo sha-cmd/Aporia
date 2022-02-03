@@ -1,20 +1,21 @@
+import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import tensorflow as tf
-import cv2
 import os
+import pandas as pd
 import sys
 import seaborn as sns
+import tensorflow as tf
+import yaml
 
+from dvclive import Live
+from glob import glob
 from objects.WeightedCrossEntropy import WeightedCrossEntropy
 from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
-from glob import glob
 from tools import DATA_DIR, IMAGE_SIZE
-from dvclive import Live
 
 live = Live()
 
@@ -107,10 +108,17 @@ def plot(model="aucun", name="aucun"):
 
 
 def main(model="k2000"):
-    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-500:]
-    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-500:]
-    metrics_wce = WeightedCrossEntropy(beta=0.7)
-    metrics_bce = BalancedCrossEntropy(beta=0.5)
+    with open("params.yaml", 'r') as fd:
+        params = yaml.safe_load(fd)
+        wce_beta = float(params[model]['wce_beta'])
+        bce_beta = float(params[model]['bce_beta'])
+        test_size = int(params[model]['test_size'])
+
+    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-test_size:]
+    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-test_size:]
+    metrics_wce = WeightedCrossEntropy(beta=wce_beta)
+    metrics_bce = BalancedCrossEntropy(beta=bce_beta)
+
     if model == "k2000":
         history = keras.models.load_model('models/k2000', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce})
     elif model == "dolorean":
@@ -125,11 +133,11 @@ def main(model="k2000"):
     colormap = colormap.astype(np.uint8)
 
 #    plot_predictions(test_images[:4], colormap, model=history)
-    nb = 100
+    nb = test_size
     for i in range(nb):
         if (i % 20) == 0:
             print(f"images traité pour le mIoU : {i}\nimages restantes pour le mIoU {i-nb}\n")
-        res = mIoU(test_images[i+1], test_masks[i+1], model=history)
+        res = mIoU(test_images[i], test_masks[i], model=history)
         avg_res = sum(res) / len(res)
         live.log("mIoU", round(avg_res, 2))
         live.next_step()
