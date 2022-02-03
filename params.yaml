@@ -28,3 +28,14 @@ shelob:
   wce_beta: 0.7
   bce_beta: 0.5
   trials: 1
+
+stick:
+  epochs: 1
+  data_mix: original_version
+  name: stick
+  test_size: 500
+  optim_type: adam
+  learning_rate: 0.001
+  wce_beta: 0.7
+  bce_beta: 0.5
+  trials: 1

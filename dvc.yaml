@@ -110,4 +110,12 @@ stages:
         cache: false
         persist: true
 
+  stick:
+    cmd: python src/HM_deeplabv3_plus.py --type dl
+    meta:
+      - data
+    outs:
+      - stick/stick_awards.csv:
+          cache: false
+          persist: true
 
