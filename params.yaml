@@ -17,3 +17,14 @@ dolorean:
   learning_rate: 0.001
   wce_beta: 0.7
   bce_beta: 0.5
+
+shelob:
+  epochs: 1
+  data_mix: original_version
+  name: shelob
+  test_size: 500
+  optim_type: adam
+  learning_rate: 0.001
+  wce_beta: 0.7
+  bce_beta: 0.5
+  trials: 1

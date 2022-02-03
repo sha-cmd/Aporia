@@ -1,103 +1,113 @@
 stages:
   octagones:
     cmd: python src/prepare_polygons.py
+
   brush-work:
     cmd: python src/prepare_masks.py
+
   k2000:
-    cmd: python src/deeplabv3_plus.py
+    cmd: python src/deeplabv3_plus.py --type dl
     meta:
-      - data/:
-          cache: true
+    - data
     params:
-      - k2000.epochs
+    - k2000.epochs
     metrics:
-      - k2000.json:
-          cache: false
-          persist: true
+    - k2000.json:
+        cache: false
+        persist: true
     outs:
-      - models/k2000:
-          cache: false
-          persist: true
-          desc: modeling of the segmentation of images of Cityscapes.
-      - k2000/mIoU_density.jpg:
-          cache: false
-          persist: true
-      - k2000/Dice_coefficient_density.jpg:
-          cache: false
-          persist: true
+    - models/k2000:
+        cache: false
+        persist: true
+        desc: modeling of the segmentation of images of Cityscapes.
+    - k2000/mIoU_density.jpg:
+        cache: false
+        persist: true
+    - k2000/Dice_coefficient_density.jpg:
+        cache: false
+        persist: true
     plots:
-      - k2000/mIoU.csv:
-          cache: false
-          persist: true
-          title: mIoU k2000
-          x: pics
-          y: mIoU
-      - k2000/Dice_coefficient.csv:
-          cache: false
-          persist: true
-          title: Dice Coefficient k2000
-          x: pics
-          y: Dice_coefficient
-      - k2000/accuracy_multi_plots.csv:
-          cache: false
-          persist: true
-          title: Train/Test Accuracy k2000
-          template: multi_loss
-          x: epoch
-          y: accuracy
-      - k2000/loss_multi_plots.csv:
-          cache: false
-          persist: true
-          title: Train/Test Loss k2000
-          template: multi_loss
-          x: epoch
-          y: loss
+    - k2000/mIoU.csv:
+        cache: false
+        persist: true
+        title: mIoU k2000
+        x: pics
+        y: mIoU
+    - k2000/Dice_coefficient.csv:
+        cache: false
+        persist: true
+        title: Dice Coefficient k2000
+        x: pics
+        y: Dice_coefficient
+    - k2000/accuracy_multi_plots.csv:
+        cache: false
+        persist: true
+        title: Train/Test Accuracy k2000
+        template: multi_loss
+        x: epoch
+        y: accuracy
+    - k2000/loss_multi_plots.csv:
+        cache: false
+        persist: true
+        title: Train/Test Loss k2000
+        template: multi_loss
+        x: epoch
+        y: loss
+
   dolorean:
-    cmd: python src/U-Net_Xception.py
+    cmd: python src/U-Net_Xception.py --type dl
     meta:
-      - data/:
-          cache: true
+    - data
     metrics:
-      - dolorean.json:
-          cache: false
-          persist: true
+    - dolorean.json:
+        cache: false
+        persist: true
     outs:
-      - models/dolorean:
-          cache: false
-          persist: true
-          desc: modeling of the segmentation of images of Cityscapes.
-      - dolorean/mIoU_density.jpg:
-          cache: false
-          persist: true
-      - dolorean/Dice_coefficient_density.jpg:
-          cache: false
-          persist: true
+    - models/dolorean:
+        cache: false
+        persist: true
+        desc: modeling of the segmentation of images of Cityscapes.
+    - dolorean/mIoU_density.jpg:
+        cache: false
+        persist: true
+    - dolorean/Dice_coefficient_density.jpg:
+        cache: false
+        persist: true
     plots:
-      - dolorean/mIoU.csv:
-          cache: false
-          persist: true
-          title: mIoU dolorean
-          x: pics
-          y: mIoU
-      - dolorean/Dice_coefficient.csv:
-          cache: false
-          persist: true
-          title: Dice Coefficient dolorean
-          x: pics
-          y: Dice_coefficient
-      - dolorean/accuracy_multi_plots.csv:
-          cache: false
-          persist: true
-          title: Train/Test Accuracy dolorean
-          template: multi_loss
-          x: epoch
-          y: accuracy
-      - dolorean/loss_multi_plots.csv:
-          cache: false
-          persist: true
-          title: Train/Test Loss dolorean
-          template: multi_loss
-          x: epoch
-          y: loss
-  kit:
-    cmd: python src/inference.py
+    - dolorean/mIoU.csv:
+        cache: false
+        persist: true
+        title: mIoU dolorean
+        x: pics
+        y: mIoU
+    - dolorean/Dice_coefficient.csv:
+        cache: false
+        persist: true
+        title: Dice Coefficient dolorean
+        x: pics
+        y: Dice_coefficient
+    - dolorean/accuracy_multi_plots.csv:
+        cache: false
+        persist: true
+        title: Train/Test Accuracy dolorean
+        template: multi_loss
+        x: epoch
+        y: accuracy
+    - dolorean/loss_multi_plots.csv:
+        cache: false
+        persist: true
+        title: Train/Test Loss dolorean
+        template: multi_loss
+        x: epoch
+        y: loss
+
+  shelob:
+    cmd: python src/HM_U_Net_Xception.py --type dl
+    meta:
+    - data
+    outs:
+    - shelob/shelob_awards.csv:
+        cache: false
+        persist: true
+
+

@@ -5,63 +5,69 @@ stages:
   brush-work:
     cmd: python src/prepare_masks.py
   k2000:
-    cmd: python src/deeplabv3_plus.py
+    cmd: python src/deeplabv3_plus.py --type dl
     params:
       params.yaml:
         k2000.epochs: 1
     outs:
     - path: k2000.json
-      md5: 73d131d8e0409deba51d7f731a1c3873
-      size: 292
+      md5: 4972a49356b1f3b4324a4250c5ef1b24
+      size: 291
     - path: k2000/Dice_coefficient.csv
-      md5: a5158c852d380a45e0855f37765348db
+      md5: cd3cb3b1779d280347ab596618d34c6f
       size: 13375
     - path: k2000/Dice_coefficient_density.jpg
-      md5: cf1bcbc511e8f288542208d3079795e8
-      size: 17132
+      md5: 590c02d684ca503ead8fd7072b071cb0
+      size: 16764
     - path: k2000/accuracy_multi_plots.csv
-      md5: a15ccdd84167d074930fd024f5637191
+      md5: 5e92444bcaf4c86b80563677503205f6
       size: 121
     - path: k2000/loss_multi_plots.csv
-      md5: a399054204397c9203c9b047270c0382
-      size: 117
+      md5: f16922983bf615d89ff40a9240ef7d02
+      size: 116
     - path: k2000/mIoU.csv
-      md5: dc6cc4c1b8ef2320fcacda58e0e83af9
-      size: 13269
+      md5: 064e291346afc3d5b70f1e01fe475895
+      size: 13245
     - path: k2000/mIoU_density.jpg
-      md5: 64406998fae036516fc12e81dd58433f
-      size: 16047
+      md5: c54a8622c4fba043698eba94b8477aeb
+      size: 16454
     - path: models/k2000
-      md5: 92791d0e03f0d0ed16bb626302877e88.dir
+      md5: d91bba623c9d34d23036b04733ccd301.dir
       size: 146546615
       nfiles: 4
   kit:
     cmd: python src/inference.py
   dolorean:
-    cmd: python src/U-Net_Xception.py
+    cmd: python src/U-Net_Xception.py --type dl
     outs:
     - path: dolorean.json
-      md5: 3ee6d99f936bd9f049de69ff87abcdac
-      size: 293
+      md5: 49c83c2f59647a99a394c829bc83ec97
+      size: 297
     - path: dolorean/Dice_coefficient.csv
-      md5: d5cc1ec031eb5e64840cce2f853def32
-      size: 13372
+      md5: 30cbee88fc037f75550883d5e676fa4d
+      size: 13387
     - path: dolorean/Dice_coefficient_density.jpg
-      md5: 64c8812b941ec8103818a98fd2b1c576
-      size: 17180
+      md5: 0cb4664186a32ad9e83dede1c9afa512
+      size: 17137
     - path: dolorean/accuracy_multi_plots.csv
-      md5: 6b561d13f82b72edc10e82662a5e1424
+      md5: 1ffbe199d0055ec6593be082387fd980
       size: 121
     - path: dolorean/loss_multi_plots.csv
-      md5: 0ec712692a776d1f4043a67fc0802898
-      size: 115
+      md5: a3f190755167d93ea59752ce7222bf92
+      size: 117
     - path: dolorean/mIoU.csv
-      md5: 4cade4e8729bd0bfd5b3abdf475f3055
-      size: 13249
+      md5: 468be923774befd6be0f87f07a20da81
+      size: 13258
     - path: dolorean/mIoU_density.jpg
-      md5: 37216b4835bf4b5f124d3ec18f551f64
-      size: 15439
+      md5: 5edffca39fe0b7f3ec9610d4b83ea977
+      size: 15236
     - path: models/dolorean
-      md5: ed0126ccefc6f94d0d34db3f9acbe462.dir
+      md5: db2a19688f96e19a55a23e4bee330f77.dir
       size: 26693746
       nfiles: 4
+  shelob:
+    cmd: python src/HM_U_Net_Xception.py --type dl
+    outs:
+    - path: shelob/shelob_awards.csv
+      md5: 156eee205c087e4acc1c9b4ff4e17d7b
+      size: 57
