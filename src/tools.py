@@ -52,15 +52,15 @@ def load_data(image_list, mask_list):
     return image, mask
 
 
-def data_original_version(image_list, mask_list):
+def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
     """Retourne les données telles quelles"""
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
     dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
+    dataset = dataset.batch(batch_size, drop_remainder=True)
     return dataset
 
 
-def data_augmented(image_list, mask_list):
+def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     """Retourne les données augmentées"""
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=20)
     image_aug = img_gen.flow_from_dataframe(dataframe=pd.DataFrame(image_list, columns=['filename']),
@@ -71,5 +71,5 @@ def data_augmented(image_list, mask_list):
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
     dataset = dataset.concatenate(dataset_aug)
     dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.batch(BATCH_SIZE, drop_remainder=True)
+    dataset = dataset.batch(batch_size, drop_remainder=True)
     return dataset
