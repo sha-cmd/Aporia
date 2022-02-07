@@ -35,14 +35,14 @@ def read_image(image_path, mask=False):
     image = tf.io.read_file(image_path)
     if mask:
         image = tf.image.decode_png(image, channels=1)
-        image.set_shape([1024, 2048, 1])
+        image.set_shape([None, None, 1])
         image = tf.image.resize(images=image, size=[IMAGE_SIZE, IMAGE_SIZE])
 
     else:
         image = tf.image.decode_png(image, channels=3)
-        image.set_shape([1024, 2048, 3])
+        image.set_shape([None, None, 3])
         image = tf.image.resize(images=image, size=[IMAGE_SIZE, IMAGE_SIZE])
-        image = image / 127.5 - 1
+        image = image / 255
 
     return image
 
@@ -54,8 +54,10 @@ def load_data(image_list, mask_list):
 
 
 def load_data_img(image_list):
-    image = read_image(image_list)
-    image = tf.image.resize(image, [128, 128])
+    image = read_image(image_list, mask=True)
+    # image = image.numpy()
+    # print(type(image), image.shape)
+    #    image = tf.image.resize(image, [IMAGE_SIZE, IMAGE_SIZE])
     return image
 
 
@@ -75,18 +77,33 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     :param batch_size: Taille du batch pour la compilation du modèle
     :return:
     """
-    d = {'filename': image_list, 'class': mask_list}
+    print(mask_list, len(mask_list), type(mask_list))
+
+    def openImage(image):
+         image = tf.io.read_file(image)
+         image = tf.image.decode_png(image, channels=0, dtype=tf.dtypes.uint8)
+         image = tf.image.resize(images=image, size=[IMAGE_SIZE, IMAGE_SIZE])
+         image = np.moveaxis(image, (0, 1, 2), (2, 1, 0))
+         image = np.array(image)
+         return image
+
+    classes = [openImage(x) for x in mask_list]
+    d = {'filename': image_list}
+    y_cols = []
+    d = {'filename': mask_list}
+    for i in range(classes[0].shape[0]):
+        col_value = []
+        for j in range(len(mask_list)):
+            col = 'col_' + str(i)
+            y_cols.append(col)
+            col_value.append(classes[j][i, :, :])
+        d.update({col: col_value})
     df = pd.DataFrame(data=d)
-    dataset = np.array([load_data_img(x) for x in image_list])
-    img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22,
-                                                              featurewise_center=True,
-                                                              featurewise_std_normalization=True,
-                                                              zca_whitening=True, zca_epsilon=1e-06)
-    img_gen.fit(dataset, augment=True, rounds=1)
+    img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22)
     iterator_img = img_gen.flow_from_dataframe(dataframe=df,
-                                               directory='.', save_prefix='da', target_size=(IMAGE_SIZE, IMAGE_SIZE),
-                                               class_mode='input', ass_mode=None, save_to_dir='if/',
-                                               batch_size=batch_size)
+                                               directory='.', shuffle=False, save_prefix='da',y_col=y_cols,
+                                               class_mode='raw', batch_size=BATCH_SIZE, save_to_dir='if/')  # ,
+
     data_generator = iterator_img
 
     return data_generator
