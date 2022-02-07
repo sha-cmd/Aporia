@@ -67,13 +67,11 @@ def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
     return dataset
 
 
-def data_augmented(image_list, mask_list, str_img, str_msk, batch_size=BATCH_SIZE):
+def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     """
-
+    Retourne le data generator des données augmentées
     :param image_list: Liste comprenant les chemins vers les images
     :param mask_list: Liste comprenant les chemins vers les masques
-    :param str_img: String du regex pattern vers les images, ex : data/**/*.png
-    :param str_msk: String du regex pattern vers les masques, ex : data/**/*octogroups.png
     :param batch_size: Taille du batch pour la compilation du modèle
     :return:
     """
@@ -82,6 +80,7 @@ def data_augmented(image_list, mask_list, str_img, str_msk, batch_size=BATCH_SIZ
     dataset = np.array([load_data_img(x) for x in image_list])
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22,
                                                               featurewise_center=True,
+                                                              featurewise_std_normalization=True,
                                                               zca_whitening=True, zca_epsilon=1e-06)
     img_gen.fit(dataset, augment=True, rounds=1)
     iterator_img = img_gen.flow_from_dataframe(dataframe=df,

@@ -36,5 +36,5 @@ class DataGenerator(ModelVariables):
 
     def data_aug(self):
         print('data_aug')
-        return data_augmented(self.path_images, self.path_masks, self.str_images, self.str_masks, self.size_batch)
+        return data_augmented(self.path_images, self.path_masks, self.size_batch)
 
