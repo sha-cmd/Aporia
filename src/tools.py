@@ -87,22 +87,14 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
          image = np.array(image)
          return image
 
-    classes = [openImage(x) for x in mask_list]
-    d = {'filename': image_list}
-    y_cols = []
-    d = {'filename': mask_list}
-    for i in range(classes[0].shape[0]):
-        col_value = []
-        for j in range(len(mask_list)):
-            col = 'col_' + str(i)
-            y_cols.append(col)
-            col_value.append(classes[j][i, :, :])
-        d.update({col: col_value})
+    #classes = [openImage(x) for x in mask_list]
+    d = {'filename': image_list, 'class': mask_list}
     df = pd.DataFrame(data=d)
+    print(df)
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22)
-    iterator_img = img_gen.flow_from_dataframe(dataframe=df,
-                                               directory='.', shuffle=False, save_prefix='da',y_col=y_cols,
-                                               class_mode='raw', batch_size=BATCH_SIZE, save_to_dir='if/')  # ,
+    iterator_img = img_gen.flow_from_dataframe(dataframe=df, color_mode='grayscale',
+                                               directory='.', shuffle=False, save_prefix='da',
+                                               class_mode='input', batch_size=BATCH_SIZE, save_to_dir='if/')  # ,
 
     data_generator = iterator_img
 
