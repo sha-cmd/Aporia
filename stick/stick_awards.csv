@@ -1,2 +1,2 @@
 index,batch_size,optim_type,learning_rate
-0,8,adam,0.001
+0,4,adamax,0.00030070291801405905
