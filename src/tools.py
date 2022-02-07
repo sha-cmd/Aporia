@@ -53,14 +53,6 @@ def load_data(image_list, mask_list):
     return image, mask
 
 
-def load_data_img(image_list):
-    image = read_image(image_list, mask=True)
-    # image = image.numpy()
-    # print(type(image), image.shape)
-    #    image = tf.image.resize(image, [IMAGE_SIZE, IMAGE_SIZE])
-    return image
-
-
 def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
     """Retourne les données telles quelles"""
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
