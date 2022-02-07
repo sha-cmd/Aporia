@@ -89,10 +89,8 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     d = {'filename': image_list, 'class': mask_list}
     df = pd.DataFrame(data=d)
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22)
-    iterator_img = img_gen.flow_from_dataframe(dataframe=df, color_mode='grayscale',
+    data_generator = img_gen.flow_from_dataframe(dataframe=df, color_mode='grayscale',
                                                directory='.', shuffle=False, save_prefix='da',
                                                class_mode='input', batch_size=BATCH_SIZE, save_to_dir='if/')  # ,
-
-    data_generator = iterator_img
 
     return data_generator
