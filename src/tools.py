@@ -5,8 +5,8 @@ IMAGE_SIZE = 256
 BATCH_SIZE = 4
 NUM_CLASSES = 8
 DATA_DIR = "data"
-NUM_TRAIN_IMAGES = 50
-NUM_VAL_IMAGES = 10
+NUM_TRAIN_IMAGES = 16
+NUM_VAL_IMAGES = 8
 
 
 def loss_pool():
@@ -62,14 +62,14 @@ def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
 
 def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     """Retourne les données augmentées"""
-    img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=20)
-    image_aug = img_gen.flow_from_dataframe(dataframe=pd.DataFrame(image_list, columns=['filename']),
-                                            directory='.', class_mode=None, batch_size=4)
-    mask_aug = img_gen.flow_from_dataframe(dataframe=pd.DataFrame(mask_list, columns=['filename']),
-                                           directory='.', class_mode=None, batch_size=4)
-    dataset_aug = tf.data.Dataset.from_tensor_slices((image_aug, mask_aug))
-    dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
-    dataset = dataset.concatenate(dataset_aug)
-    dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.batch(batch_size, drop_remainder=True)
-    return dataset
+    d = {'filename': image_list, 'class': mask_list}
+    df = pd.DataFrame(data=d)
+    img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22,
+                                                              zca_whitening=False, zca_epsilon=1e-06)
+    iterator_img = img_gen.flow_from_dataframe(dataframe=df,
+                                               directory='.', save_prefix='da', target_size=(IMAGE_SIZE, IMAGE_SIZE),
+                                               class_mode='input', ass_mode=None, save_to_dir='if/',
+                                               batch_size=batch_size)
+    data_generator = iterator_img
+
+    return data_generator
