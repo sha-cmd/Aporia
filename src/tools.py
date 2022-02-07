@@ -1,7 +1,8 @@
+import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-IMAGE_SIZE = 256
+IMAGE_SIZE = 128
 BATCH_SIZE = 4
 NUM_CLASSES = 8
 DATA_DIR = "data"
@@ -52,6 +53,12 @@ def load_data(image_list, mask_list):
     return image, mask
 
 
+def load_data_img(image_list):
+    image = read_image(image_list)
+    image = tf.image.resize(image, [128, 128])
+    return image
+
+
 def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
     """Retourne les données telles quelles"""
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
@@ -60,12 +67,23 @@ def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
     return dataset
 
 
-def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
-    """Retourne les données augmentées"""
+def data_augmented(image_list, mask_list, str_img, str_msk, batch_size=BATCH_SIZE):
+    """
+
+    :param image_list: Liste comprenant les chemins vers les images
+    :param mask_list: Liste comprenant les chemins vers les masques
+    :param str_img: String du regex pattern vers les images, ex : data/**/*.png
+    :param str_msk: String du regex pattern vers les masques, ex : data/**/*octogroups.png
+    :param batch_size: Taille du batch pour la compilation du modèle
+    :return:
+    """
     d = {'filename': image_list, 'class': mask_list}
     df = pd.DataFrame(data=d)
+    dataset = np.array([load_data_img(x) for x in image_list])
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22,
-                                                              zca_whitening=False, zca_epsilon=1e-06)
+                                                              featurewise_center=True,
+                                                              zca_whitening=True, zca_epsilon=1e-06)
+    img_gen.fit(dataset, augment=True, rounds=1)
     iterator_img = img_gen.flow_from_dataframe(dataframe=df,
                                                directory='.', save_prefix='da', target_size=(IMAGE_SIZE, IMAGE_SIZE),
                                                class_mode='input', ass_mode=None, save_to_dir='if/',
