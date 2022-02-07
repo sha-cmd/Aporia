@@ -77,8 +77,6 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     :param batch_size: Taille du batch pour la compilation du modèle
     :return:
     """
-    print(mask_list, len(mask_list), type(mask_list))
-
     def openImage(image):
          image = tf.io.read_file(image)
          image = tf.image.decode_png(image, channels=0, dtype=tf.dtypes.uint8)
@@ -90,7 +88,6 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     #classes = [openImage(x) for x in mask_list]
     d = {'filename': image_list, 'class': mask_list}
     df = pd.DataFrame(data=d)
-    print(df)
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22)
     iterator_img = img_gen.flow_from_dataframe(dataframe=df, color_mode='grayscale',
                                                directory='.', shuffle=False, save_prefix='da',
