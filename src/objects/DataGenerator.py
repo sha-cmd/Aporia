@@ -6,12 +6,10 @@ from tools import data_augmented
 from tools import BATCH_SIZE
 
 class DataGenerator(ModelVariables):
-    def __init__(self, name, batch_size=BATCH_SIZE):
+    def __init__(self, batch_size=BATCH_SIZE):
         super().__init__()
         print('Eager loading ready')
         self.size_batch = batch_size
-        self.str_images = name[0]
-        self.str_masks = name[1]
 
     def __call__(self, path_images, path_masks, data_mix='NA'):
         # Security purpose
