@@ -5,7 +5,6 @@ import pandas as pd
 import tensorflow as tf
 from time import time
 import yaml
-
 from tensorflow.keras.callbacks import Callback
 from tools import optim_pool
 from objects.WeightedCrossEntropy import WeightedCrossEntropy
@@ -14,7 +13,7 @@ from dvclive.keras import DvcLiveCallback
 from glob import glob
 from tensorflow import keras
 from tensorflow.keras import layers
-from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES
+from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES, BATCH_SIZE
 from objects.DataGenerator import DataGenerator
 
 
@@ -46,16 +45,19 @@ with open("params.yaml", 'r') as fd:
     wce_beta = float(params['dolorean']['wce_beta'])
     bce_beta = float(params['dolorean']['bce_beta'])
 
+train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.png"
+train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.png"
+val_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/val/**/*.png"
+val_masks_str = DATA_DIR + "/finetuning/gtFine/val/**/*octogroups.png"
+
 train_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[
-               :- test_size]  # [:NUM_TRAIN_IMAGES]
+    glob(os.path.join(train_images_str), recursive=True))[:NUM_TRAIN_IMAGES]
 train_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[
-              :- test_size]  # [:NUM_TRAIN_IMAGES]
+    glob(os.path.join(train_masks_str), recursive=True))[:NUM_TRAIN_IMAGES]
 val_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))  # [:NUM_VAL_IMAGES]
+    glob(os.path.join(val_images_str), recursive=True))[:NUM_VAL_IMAGES]
 val_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))  # [:NUM_VAL_IMAGES]
+    glob(os.path.join(val_masks_str), recursive=True))[:NUM_VAL_IMAGES]
 
 print('Found', len(train_images), 'training images')
 print('Found', len(train_masks), 'training masks')
@@ -75,10 +77,10 @@ for i in range(len(val_images)):
         .split('/')[-1].split('_gtFine_polygons_octogroups')[0]
 print('Validation images correspond to validation masks')
 
-data_blend = DataGenerator()
-
-train_dataset = data_blend(train_images, train_masks, data_mix)
-val_dataset = data_blend(val_images, val_masks, data_mix)
+data_blend_train = DataGenerator()
+data_blend_val = DataGenerator()
+train_dataset = data_blend_train(train_images, train_masks, data_mix)
+val_dataset = data_blend_val(val_images, val_masks, data_mix)
 
 print("Train Dataset:", train_dataset)
 print("Val Dataset:", val_dataset)
@@ -157,22 +159,22 @@ callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(
 
 model.compile(
     optimizer=optimizer,
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    metrics=["accuracy", metrics_wce, metrics_bce],
+    loss=tf.keras.losses.CategoricalCrossentropy(),#tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=["accuracy"]#, metrics_wce]# metrics_bce],
 )
 
-history = model.fit(train_dataset, validation_data=val_dataset, epochs=epochs, callbacks=[callback])
-model.save('models/' + name)
+history = model.fit(train_dataset, validation_data=val_dataset, batch_size=BATCH_SIZE, epochs=epochs, callbacks=[callback])
+#model.save('models/' + name)
 
 # Time log
-df = pd.DataFrame(cb.logs, columns=['time'])
-df.index.name = 'index'
-df.to_csv(name + '/time.csv', index_label='index')
+#df = pd.DataFrame(cb.logs, columns=['time'])
+#df.index.name = 'index'
+#df.to_csv(name + '/time.csv', index_label='index')
 
 # Création des plots
-mps.main(name)
+#mps.main(name)
 
 # Création de la métriques sur jeu de test
-irnc.main(name)
+#irnc.main(name)
 
 
