@@ -11,7 +11,7 @@ from objects.WeightedCrossEntropy import WeightedCrossEntropy
 from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from objects.DataGenerator import DataGenerator
 from glob import glob
-from tools import DATA_DIR, IMAGE_SIZE, BATCH_SIZE, NUM_CLASSES
+from tools import DATA_DIR, IMAGE_SIZE, BATCH_SIZE, NUM_CLASSES, NUM_VAL_IMAGES, NUM_TRAIN_IMAGES
 from tensorflow.keras import layers
 from tensorflow import keras
 from dvclive.keras import DvcLiveCallback
@@ -98,13 +98,13 @@ keras.backend.clear_session()
 model = get_model((IMAGE_SIZE, IMAGE_SIZE), NUM_CLASSES)
 
 train_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[:- test_size]
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[:NUM_TRAIN_IMAGES]
 train_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[:- test_size]
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[:NUM_TRAIN_IMAGES]
 val_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))
+    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))[:NUM_VAL_IMAGES]
 val_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))
+    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))[:NUM_VAL_IMAGES]
 
 print('Found', len(train_images), 'training images')
 print('Found', len(train_masks), 'training masks')
@@ -124,15 +124,15 @@ print('Validation images correspond to validation masks')
 
 
 data_blend = DataGenerator()
-
+data_blend_val = DataGenerator()
 train_dataset = data_blend(train_images, train_masks, data_mix)
-val_dataset = data_blend(val_images, val_masks, data_mix)
+val_dataset = data_blend_val(val_images, val_masks, data_mix)
 
 print("Train Dataset:", train_dataset)
 print("Val Dataset:", val_dataset)
 
 
-loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+loss = keras.losses.CategoricalCrossentropy() # keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
 metrics_wce = WeightedCrossEntropy(beta=0.7)
 metrics_bce = BalancedCrossEntropy(beta=0.5)
@@ -141,14 +141,14 @@ cb = TimingCallback()
 callbacks = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
 
 model.compile(optimizer=optimizer, loss=loss, metrics=["accuracy", metrics_wce, metrics_bce])
-model.fit(train_dataset, epochs=epochs, validation_data=val_dataset, callbacks=callbacks)
+model.fit(train_dataset, epochs=epochs, validation_data=val_dataset, batch_size=BATCH_SIZE, callbacks=callbacks)
 
 # Time log
-df = pd.DataFrame(cb.logs, columns=['time'])
-df.index.name = 'index'
-df.to_csv(name + '/time.csv', index_label='index')
+#df = pd.DataFrame(cb.logs, columns=['time'])
+#df.index.name = 'index'
+#df.to_csv(name + '/time.csv', index_label='index')
 
-model.save('models/' + name)
+#model.save('models/' + name)
 # Création des plots
-mps.main(name)
-irnc.main(name)
+#mps.main(name)
+#irnc.main(name)
