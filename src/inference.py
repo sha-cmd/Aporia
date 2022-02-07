@@ -107,7 +107,7 @@ def plot(model="aucun", name="aucun"):
     plt.savefig(model + '/' + name + '_density.jpg')
 
 
-def main(model="k2000"):
+def main(model="aucun"):
     with open("params.yaml", 'r') as fd:
         params = yaml.safe_load(fd)
         wce_beta = float(params[model]['wce_beta'])
@@ -132,7 +132,7 @@ def main(model="k2000"):
     colormap = colormap * 100
     colormap = colormap.astype(np.uint8)
 
-#    plot_predictions(test_images[:4], colormap, model=history)
+#    plot_predictions(test_images[4], colormap, model=history)
     nb = test_size
     for i in range(nb):
         if (i % 20) == 0:
