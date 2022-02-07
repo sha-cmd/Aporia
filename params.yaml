@@ -1,8 +1,8 @@
 k2000:
   epochs: 1
-  data_mix: original_version
+  data_mix: augmented
   name: k2000
-  test_size: 100
+  test_size: 10
   optim_type: adam
   learning_rate: 0.001
   wce_beta: 0.7
@@ -10,7 +10,7 @@ k2000:
 
 dolorean:
   epochs: 1
-  data_mix: original_version
+  data_mix: augmented
   name: dolorean
   test_size: 100
   optim_type: adam
@@ -19,7 +19,7 @@ dolorean:
   bce_beta: 0.5
 
 shelob:
-  epochs: 1
+  epochs: 9
   data_mix: original_version
   name: shelob
   test_size: 500
@@ -27,10 +27,10 @@ shelob:
   learning_rate: 0.001
   wce_beta: 0.7
   bce_beta: 0.5
-  trials: 1
+  trials: 16
 
 stick:
-  epochs: 1
+  epochs: 9
   data_mix: original_version
   name: stick
   test_size: 500
@@ -38,4 +38,4 @@ stick:
   learning_rate: 0.001
   wce_beta: 0.7
   bce_beta: 0.5
-  trials: 1
+  trials: 16
