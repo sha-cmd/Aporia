@@ -18,23 +18,6 @@ from dvclive.keras import DvcLiveCallback
 from time import time
 
 
-
-class TimingCallback(Callback):
-
-    def __init__(self):
-        super().__init__()
-        self.logs = []
-
-    def on_epoch_begin(self, epoch, logs=None):
-        if logs is None:
-            logs = {}
-        self.starttime = time()
-
-    def on_epoch_end(self, epoch, logs=None):
-        if logs is None:
-            logs = {}
-        self.logs.append(time()-self.starttime)
-
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
     data_mix = str(params['dolorean']['data_mix'])
@@ -86,8 +69,8 @@ def get_model(img_size, num_classes):
 
         residual = layers.UpSampling2D(2)(previous_block_activation)
         residual = layers.Conv2D(filters, 1, padding="same")(residual)
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
+        x = layers.add([x, residual])
+        previous_block_activation = x
 
     outputs = layers.Conv2D(num_classes, 3, activation="softmax", padding="same")(x)
 
@@ -138,9 +121,8 @@ loss = keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
 metrics_wce = WeightedCrossEntropy
 metrics_bce = BalancedCrossEntropy
-cb = TimingCallback()
 
-callbacks = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
+callbacks = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 
 model.compile(optimizer=optimizer, loss=loss, metrics=["accuracy", metrics_wce, metrics_bce])
 start_time = time()

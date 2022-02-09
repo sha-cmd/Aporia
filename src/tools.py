@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-
-IMAGE_SIZE = 128
+from PIL import Image
+IMAGE_SIZE = 256
 BATCH_SIZE = 4
 NUM_CLASSES = 8
-DATA_DIR = "data"
-NUM_TRAIN_IMAGES = 16
-NUM_VAL_IMAGES = 8
+DATA_DIR = "/home/romain/Documents/BackUp/Special/Projets/Code_IIA/Projet_8/Aporia/data"
+NUM_TRAIN_IMAGES = 500
+NUM_VAL_IMAGES = 250
 
 
 def loss_pool():
@@ -73,11 +73,22 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     df = pd.DataFrame(data=d)
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255, rotation_range=22,
                                                               featurewise_center=True, samplewise_center=True,
-                                                              featurewise_std_normalization=True,
                                                               samplewise_std_normalization=True,
                                                               zca_whitening=True, zca_epsilon=1e-06
                                                               )
-    data_generator = img_gen.flow_from_dataframe(dataframe=df, color_mode='grayscale',
-                                               directory='.', shuffle=False, save_prefix='da',
-                                               class_mode='input', batch_size=BATCH_SIZE, save_to_dir='if/')
+    height = width = IMAGE_SIZE
+
+    def read_pil_image(img_path, height, width):
+        with open(img_path, 'rb') as f:
+            return np.array(Image.open(f).convert('RGB').resize((width, height)))
+
+    def load_all_images(image_list, height, width):
+        return np.array([read_pil_image(str(p), height, width) for p in image_list[:10]])
+
+    #img_gen.fit(load_all_images(image_list, height, width))
+
+    data_generator = img_gen.flow_from_dataframe(dataframe=df, color_mode='rgb', target_size=(IMAGE_SIZE, IMAGE_SIZE),
+                                                 directory='.', shuffle=False,# save_prefix='da',
+                                                 class_mode='input', batch_size=BATCH_SIZE, save_to_dir='if/')
+
     return data_generator
