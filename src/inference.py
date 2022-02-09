@@ -11,8 +11,8 @@ import yaml
 from objects.TimeCallBack import TimingCallback
 from dvclive import Live
 from glob import glob
-from objects.WeightedCrossEntropy import wce
-from objects.BalancedCrossEntropy import bce
+from objects.WeightedCrossEntropy import WeightedCrossEntropy
+from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
@@ -115,8 +115,8 @@ def main(model="aucun"):
 
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-test_size:]
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-test_size:]
-    metrics_wce = wce
-    metrics_bce = bce
+    metrics_wce = WeightedCrossEntropy()
+    metrics_bce = BalancedCrossEntropy()
     cb = TimingCallback()
 
     if model == "k2000":
