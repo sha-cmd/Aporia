@@ -59,8 +59,7 @@ def plot_samples_matplotlib(display_list, figsize=(5, 3)):
             axes[i].imshow(tf.keras.preprocessing.image.array_to_img(display_list[i]))
         else:
             axes[i].imshow(display_list[i])
-    print(f'\n {name} voilà \n')
-    plt.savefig(name + '/prediction.jpg')
+    plt.savefig(name + '/inference.jpg')
 
 
 def plot_predictions(images_list, colormap, model):
