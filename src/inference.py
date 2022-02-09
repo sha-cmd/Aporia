@@ -8,15 +8,16 @@ import seaborn as sns
 import tensorflow as tf
 import yaml
 
+from objects.TimeCallBack import TimingCallback
 from dvclive import Live
 from glob import glob
-from objects.WeightedCrossEntropy import WeightedCrossEntropy
-from objects.BalancedCrossEntropy import BalancedCrossEntropy
+from objects.WeightedCrossEntropy import wce
+from objects.BalancedCrossEntropy import bce
 from scipy.io import loadmat
 from tensorflow import keras
 from tools import read_image
 from tools import DATA_DIR, IMAGE_SIZE
-
+from objects.TimeCallBack import TimingCallback
 live = Live()
 
 
@@ -110,19 +111,18 @@ def plot(model="aucun", name="aucun"):
 def main(model="aucun"):
     with open("params.yaml", 'r') as fd:
         params = yaml.safe_load(fd)
-        wce_beta = float(params[model]['wce_beta'])
-        bce_beta = float(params[model]['bce_beta'])
         test_size = int(params[model]['test_size'])
 
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-test_size:]
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-test_size:]
-    metrics_wce = WeightedCrossEntropy(beta=wce_beta)
-    metrics_bce = BalancedCrossEntropy(beta=bce_beta)
+    metrics_wce = wce
+    metrics_bce = bce
+    cb = TimingCallback()
 
     if model == "k2000":
-        history = keras.models.load_model('models/k2000', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce})
+        history = keras.models.load_model('models/k2000', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce, 'cb': cb})
     elif model == "dolorean":
-        history = keras.models.load_model('models/dolorean', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce})
+        history = keras.models.load_model('models/dolorean', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce, 'cb': cb})
     else:
         sys.exit()
     # Loading the Colormap

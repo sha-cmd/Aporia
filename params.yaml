@@ -1,22 +1,22 @@
+constants:
+  wce_beta: 0.7
+  bce_beta: 0.5
+
 k2000:
   epochs: 1
-  data_mix: augmented
+  data_mix: original_version
   name: k2000
   test_size: 10
   optim_type: adam
   learning_rate: 0.001
-  wce_beta: 0.7
-  bce_beta: 0.5
 
 dolorean:
   epochs: 1
   data_mix: augmented
   name: dolorean
-  test_size: 100
+  test_size: 10
   optim_type: adam
   learning_rate: 0.001
-  wce_beta: 0.7
-  bce_beta: 0.5
 
 shelob:
   epochs: 9

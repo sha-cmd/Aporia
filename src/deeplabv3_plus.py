@@ -3,12 +3,11 @@ import multi_plots as mps
 import os
 import pandas as pd
 import tensorflow as tf
-from time import time
 import yaml
-from tensorflow.keras.callbacks import Callback
+from objects.TimeCallBack import TimingCallback
 from tools import optim_pool
-from objects.WeightedCrossEntropy import WeightedCrossEntropy
-from objects.BalancedCrossEntropy import BalancedCrossEntropy
+from objects.WeightedCrossEntropy import wce
+from objects.BalancedCrossEntropy import bce
 from dvclive.keras import DvcLiveCallback
 from glob import glob
 from tensorflow import keras
@@ -17,21 +16,6 @@ from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_I
 from objects.DataGenerator import DataGenerator
 
 
-class TimingCallback(Callback):
-
-    def __init__(self):
-        super().__init__()
-        self.logs = []
-
-    def on_epoch_begin(self, epoch, logs=None):
-        if logs is None:
-            logs = {}
-        self.starttime = time()
-
-    def on_epoch_end(self, epoch, logs=None):
-        if logs is None:
-            logs = {}
-        self.logs.append(time()-self.starttime)
 
 
 with open("params.yaml", 'r') as fd:
@@ -42,8 +26,6 @@ with open("params.yaml", 'r') as fd:
     test_size = int(params['k2000']['test_size'])
     optim_type = str(params['k2000']['optim_type'])
     learning_rate = float(params['k2000']['learning_rate'])
-    wce_beta = float(params['dolorean']['wce_beta'])
-    bce_beta = float(params['dolorean']['bce_beta'])
 
 train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.png"
 train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.png"
@@ -151,30 +133,30 @@ def DeeplabV3Plus(image_size, num_classes):
 
 
 model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
-metrics_wce = WeightedCrossEntropy(beta=wce_beta)
-metrics_bce = BalancedCrossEntropy(beta=bce_beta)
+metrics_wce = wce
+metrics_bce = bce
 optimizer = optim_pool(learning_rate=learning_rate)[optim_type]
 cb = TimingCallback()
 callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
 
 model.compile(
     optimizer=optimizer,
-    loss=tf.keras.losses.CategoricalCrossentropy(),#tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    metrics=["accuracy"]#, metrics_wce]# metrics_bce],
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=["accuracy", metrics_wce, metrics_bce],
 )
-
+print('\nApprentissage\n')
 history = model.fit(train_dataset, validation_data=val_dataset, batch_size=BATCH_SIZE, epochs=epochs, callbacks=[callback])
-#model.save('models/' + name)
+model.save('models/' + name)
 
 # Time log
-#df = pd.DataFrame(cb.logs, columns=['time'])
-#df.index.name = 'index'
-#df.to_csv(name + '/time.csv', index_label='index')
+df = pd.DataFrame(cb.logs, columns=['time'])
+df.index.name = 'index'
+df.to_csv(name + '/time.csv', index_label='index')
 
 # Création des plots
-#mps.main(name)
+mps.main(name)
 
 # Création de la métriques sur jeu de test
-#irnc.main(name)
+irnc.main(name)
 
 

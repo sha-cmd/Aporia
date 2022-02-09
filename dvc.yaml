@@ -7,12 +7,13 @@ stages:
 
   k2000:
     cmd: python src/deeplabv3_plus.py --type dl
-    meta:
-    - data
     params:
     - k2000.epochs
     metrics:
     - k2000.json:
+        cache: false
+        persist: true
+    - k2000/time.csv:
         cache: false
         persist: true
     outs:
@@ -56,10 +57,11 @@ stages:
 
   dolorean:
     cmd: python src/U-Net_Xception.py --type dl
-    meta:
-    - data
     metrics:
     - dolorean.json:
+        cache: false
+        persist: true
+    - dolorean/time.csv:
         cache: false
         persist: true
     outs:
