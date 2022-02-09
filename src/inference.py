@@ -18,6 +18,7 @@ from tensorflow import keras
 from tools import read_image
 from tools import DATA_DIR, IMAGE_SIZE
 from objects.TimeCallBack import TimingCallback
+
 live = Live()
 
 global name
@@ -96,7 +97,7 @@ def dice_coef_multilabel(y_true, y_pred, numLabels):
     dice = 0
     for index in range(numLabels):
         dice += dice_coef(np.where(y_true == index, 1, 0), np.where(y_pred == index, 1, 0))
-    return dice/numLabels
+    return dice / numLabels
 
 
 def plot(model="aucun", name="aucun"):
@@ -119,13 +120,18 @@ def main(model="aucun"):
         params = yaml.safe_load(fd)
         test_size = int(params[model]['test_size'])
     print(model)
-    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-test_size:]
-    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-test_size:]
+    test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[
+                  -test_size:]
+    test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[
+                 -test_size:]
     metrics_wce = WeightedCrossEntropy
     metrics_bce = BalancedCrossEntropy
     cb = TimingCallback()
 
-    history = keras.models.load_model('models/' + model, compile=False, custom_objects={'WeightedCrossEntropy': metrics_wce, 'BalancedCrossEntropy': metrics_bce, 'TimingCallback': cb})
+    history = keras.models.load_model('models/' + model, compile=False,
+                                      custom_objects={'WeightedCrossEntropy': metrics_wce,
+                                                      'BalancedCrossEntropy': metrics_bce,
+                                                      'TimingCallback': cb})
 
     # Loading the Colormap
     colormap = loadmat(
@@ -137,7 +143,7 @@ def main(model="aucun"):
     nb = test_size
     for i in range(nb):
         if (i % 20) == 0:
-            print(f"images traité pour le mIoU : {i}\nimages restantes pour le mIoU {i-nb}\n")
+            print(f"images traité pour le mIoU : {i}\nimages restantes pour le mIoU {i - nb}\n")
         res = mIoU(test_images[i], test_masks[i], model=history)
         avg_res = sum(res) / len(res)
         live.log("mIoU", round(avg_res, 2))
@@ -156,6 +162,7 @@ def main(model="aucun"):
         live.log("Dice_coefficient", round(dice_score, 2))
         live.next_step()
     plot(model, 'Dice_coefficient')
+
 
 if __name__ == "__main__":
     main()
