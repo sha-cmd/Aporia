@@ -132,7 +132,7 @@ print("Train Dataset:", train_dataset)
 print("Val Dataset:", val_dataset)
 
 
-loss = keras.losses.CategoricalCrossentropy() # keras.losses.SparseCategoricalCrossentropy(from_logits=False)
+loss = keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
 metrics_wce = WeightedCrossEntropy
 metrics_bce = BalancedCrossEntropy
@@ -148,7 +148,7 @@ df = pd.DataFrame(cb.logs, columns=['time'])
 df.index.name = 'index'
 df.to_csv(name + '/time.csv', index_label='index')
 
-# model.save('models/' + name)
+model.save('models/' + name)
 # Création des plots
 mps.main(name)
 irnc.main(name)
