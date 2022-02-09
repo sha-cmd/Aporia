@@ -2,9 +2,9 @@ import inference as irnc
 import multi_plots as mps
 import os
 import pandas as pd
+import re
 import tensorflow as tf
 import yaml
-from objects.TimeCallBack import TimingCallback
 from tools import optim_pool
 from objects.WeightedCrossEntropy import WeightedCrossEntropy
 from objects.BalancedCrossEntropy import BalancedCrossEntropy
@@ -14,9 +14,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES, BATCH_SIZE
 from objects.DataGenerator import DataGenerator
-
-
-
+from time import time
 
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
@@ -136,22 +134,30 @@ model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
 metrics_wce = WeightedCrossEntropy
 metrics_bce = BalancedCrossEntropy
 optimizer = optim_pool(learning_rate=learning_rate)[optim_type]
-cb = TimingCallback()
-callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
+callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)]
 
 model.compile(
     optimizer=optimizer,
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    loss=[tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)],
     metrics=["accuracy", metrics_wce, metrics_bce],
 )
 print('\nApprentissage\n')
+
+start_time = time()
 history = model.fit(train_dataset, validation_data=val_dataset, batch_size=BATCH_SIZE, epochs=epochs, callbacks=[callback])
 model.save('models/' + name)
 
 # Time log
-df = pd.DataFrame(cb.logs, columns=['time'])
-df.index.name = 'index'
-df.to_csv(name + '/time.csv', index_label='index')
+df = pd.read_json(name + '.json', orient='index')
+df.at['time', 0] = round((time()-start_time), 2)
+df.to_json(name + '.json', orient='index')
+
+with open(name + '.json', 'r') as f:
+    line = f.read()
+for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+.?\d+', line)):
+    line = line.replace(old, new)
+with open(name + '.json', 'w') as f:
+    f.write(line)
 
 # Création des plots
 mps.main(name)

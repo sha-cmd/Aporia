@@ -13,9 +13,6 @@ stages:
     - k2000.json:
         cache: false
         persist: true
-    - k2000/time.csv:
-        cache: false
-        persist: true
     outs:
     - models/k2000:
         cache: false
@@ -64,9 +61,6 @@ stages:
     - dolorean.json:
         cache: false
         persist: true
-    - dolorean/time.csv:
-        cache: false
-        persist: true
     outs:
     - models/dolorean:
         cache: false
@@ -111,8 +105,6 @@ stages:
 
   shelob:
     cmd: python src/HM_U_Net_Xception.py --type dl
-    meta:
-    - data
     outs:
     - shelob/shelob_awards.csv:
         cache: false
@@ -120,8 +112,6 @@ stages:
 
   stick:
     cmd: python src/HM_deeplabv3_plus.py --type dl
-    meta:
-      - data
     outs:
       - stick/stick_awards.csv:
           cache: false
