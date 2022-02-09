@@ -20,6 +20,8 @@ from tools import DATA_DIR, IMAGE_SIZE
 from objects.TimeCallBack import TimingCallback
 live = Live()
 
+global name
+
 
 def infer(model, image_tensor):
     predictions = model.predict(np.expand_dims(image_tensor, axis=0))
@@ -49,13 +51,15 @@ def get_overlay(image, colored_mask):
 
 
 def plot_samples_matplotlib(display_list, figsize=(5, 3)):
+    global name
     _, axes = plt.subplots(nrows=1, ncols=len(display_list), figsize=figsize)
     for i in range(len(display_list)):
         if display_list[i].shape[-1] == 3:
             axes[i].imshow(tf.keras.preprocessing.image.array_to_img(display_list[i]))
         else:
             axes[i].imshow(display_list[i])
-    plt.show()
+    print(f'\n {name} voilà \n')
+    plt.savefig(name + '/prediction.jpg')
 
 
 def plot_predictions(images_list, colormap, model):
@@ -109,17 +113,19 @@ def plot(model="aucun", name="aucun"):
 
 
 def main(model="aucun"):
+    global name
+    name = model
     with open("params.yaml", 'r') as fd:
         params = yaml.safe_load(fd)
         test_size = int(params[model]['test_size'])
-
+    print(model)
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-test_size:]
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-test_size:]
     metrics_wce = WeightedCrossEntropy
     metrics_bce = BalancedCrossEntropy
     cb = TimingCallback()
 
-    history = keras.models.load_model('models/' + model, compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce, 'cb': cb})
+    history = keras.models.load_model('models/' + model, compile=False, custom_objects={'WeightedCrossEntropy': metrics_wce, 'BalancedCrossEntropy': metrics_bce, 'TimingCallback': cb})
 
     # Loading the Colormap
     colormap = loadmat(
@@ -127,8 +133,7 @@ def main(model="aucun"):
     )["colormap"]
     colormap = colormap * 100
     colormap = colormap.astype(np.uint8)
-
-#    plot_predictions(test_images[4], colormap, model=history)
+    plot_predictions(test_images[4:5], colormap, model=history)
     nb = test_size
     for i in range(nb):
         if (i % 20) == 0:
