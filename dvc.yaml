@@ -27,6 +27,9 @@ stages:
     - k2000/Dice_coefficient_density.jpg:
         cache: false
         persist: true
+    - k2000/inference.jpg:
+        cache: false
+        persist: true
     plots:
     - k2000/mIoU.csv:
         cache: false
@@ -73,6 +76,9 @@ stages:
         cache: false
         persist: true
     - dolorean/Dice_coefficient_density.jpg:
+        cache: false
+        persist: true
+    - dolorean/inference.jpg:
         cache: false
         persist: true
     plots:
