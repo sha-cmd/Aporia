@@ -6,6 +6,26 @@ def anticlee():
     return layer_list
 
 
+def autolycos():
+    layer_list = sorted(glob("data/coarse_tuning/leftImg8bit/train/**/*.png", recursive=True))
+    return layer_list
+
+
+def eurytos():
+    layer_list = sorted(glob("data/coarse_tuning/leftImg8bit/val/**/*.png", recursive=True))
+    return layer_list
+
+
+def telemaque():
+    layer_list = sorted(glob('data/finetuning/gtFine/train/**/*octogroups.png', recursive=True))
+    return layer_list
+
+
+def calypso():
+    layer_list = sorted(glob('data/finetuning/gtFine/val/**/*octogroups.png', recursive=True))
+    return layer_list
+
+
 def ctimene():
     dict_label = {'road': 'flat', 'sidewalk': 'flat', 'parking': 'flat', 'rail track': 'flat',
                   'person': 'human', 'rider': 'human',
