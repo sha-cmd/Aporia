@@ -119,12 +119,8 @@ def main(model="aucun"):
     metrics_bce = BalancedCrossEntropy
     cb = TimingCallback()
 
-    if model == "k2000":
-        history = keras.models.load_model('models/k2000', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce, 'cb': cb})
-    elif model == "dolorean":
-        history = keras.models.load_model('models/dolorean', compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce, 'cb': cb})
-    else:
-        sys.exit()
+    history = keras.models.load_model('models/' + model, compile=False, custom_objects={'wce': metrics_wce, 'bce': metrics_bce, 'cb': cb})
+
     # Loading the Colormap
     colormap = loadmat(
         "src/city_colormap.mat"
