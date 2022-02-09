@@ -3,39 +3,17 @@ constants:
   bce_beta: 0.5
 
 k2000:
-  epochs: 1
+  epochs: 3
   data_mix: original_version
   name: k2000
-  test_size: 10
+  test_size: 100
   optim_type: adam
   learning_rate: 0.001
 
 dolorean:
-  epochs: 1
+  epochs: 3
   data_mix: original_version
   name: dolorean
-  test_size: 10
+  test_size: 100
   optim_type: adam
   learning_rate: 0.001
-
-shelob:
-  epochs: 9
-  data_mix: original_version
-  name: shelob
-  test_size: 500
-  optim_type: adam
-  learning_rate: 0.001
-  wce_beta: 0.7
-  bce_beta: 0.5
-  trials: 16
-
-stick:
-  epochs: 9
-  data_mix: original_version
-  name: stick
-  test_size: 500
-  optim_type: adam
-  learning_rate: 0.001
-  wce_beta: 0.7
-  bce_beta: 0.5
-  trials: 16

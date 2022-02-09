@@ -102,18 +102,3 @@ stages:
         template: multi_loss
         x: epoch
         y: loss
-
-  shelob:
-    cmd: python src/HM_U_Net_Xception.py --type dl
-    outs:
-    - shelob/shelob_awards.csv:
-        cache: false
-        persist: true
-
-  stick:
-    cmd: python src/HM_deeplabv3_plus.py --type dl
-    outs:
-      - stick/stick_awards.csv:
-          cache: false
-          persist: true
-
