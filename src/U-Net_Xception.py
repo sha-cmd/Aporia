@@ -41,13 +41,13 @@ with open("params.yaml", 'r') as fd:
     test_size = int(params['dolorean']['test_size'])
     optim_type = str(params['dolorean']['optim_type'])
     learning_rate = float(params['dolorean']['learning_rate'])
-    wce_beta = float(params['dolorean']['wce_beta'])
-    bce_beta = float(params['dolorean']['bce_beta'])
 
 
 def get_model(img_size, num_classes):
-    inputs = keras.Input(shape=img_size + (3,))
-
+    inputs = keras.Input(shape=img_size + (1,))
+    inputs = tf.image.grayscale_to_rgb(
+        inputs, name=None
+    )
     x = layers.Conv2D(32, 3, strides=2, padding="same")(inputs)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
@@ -134,8 +134,8 @@ print("Val Dataset:", val_dataset)
 
 loss = keras.losses.CategoricalCrossentropy() # keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 optimizer = keras.optimizers.Adam(learning_rate=0.001)
-metrics_wce = WeightedCrossEntropy(beta=0.7)
-metrics_bce = BalancedCrossEntropy(beta=0.5)
+metrics_wce = WeightedCrossEntropy
+metrics_bce = BalancedCrossEntropy
 cb = TimingCallback()
 
 callbacks = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
@@ -144,11 +144,11 @@ model.compile(optimizer=optimizer, loss=loss, metrics=["accuracy", metrics_wce, 
 model.fit(train_dataset, epochs=epochs, validation_data=val_dataset, batch_size=BATCH_SIZE, callbacks=callbacks)
 
 # Time log
-#df = pd.DataFrame(cb.logs, columns=['time'])
-#df.index.name = 'index'
-#df.to_csv(name + '/time.csv', index_label='index')
+df = pd.DataFrame(cb.logs, columns=['time'])
+df.index.name = 'index'
+df.to_csv(name + '/time.csv', index_label='index')
 
-#model.save('models/' + name)
+# model.save('models/' + name)
 # Création des plots
-#mps.main(name)
-#irnc.main(name)
+mps.main(name)
+irnc.main(name)

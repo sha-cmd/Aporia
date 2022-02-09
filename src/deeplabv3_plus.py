@@ -6,8 +6,8 @@ import tensorflow as tf
 import yaml
 from objects.TimeCallBack import TimingCallback
 from tools import optim_pool
-from objects.WeightedCrossEntropy import wce
-from objects.BalancedCrossEntropy import bce
+from objects.WeightedCrossEntropy import WeightedCrossEntropy
+from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from dvclive.keras import DvcLiveCallback
 from glob import glob
 from tensorflow import keras
@@ -133,8 +133,8 @@ def DeeplabV3Plus(image_size, num_classes):
 
 
 model = DeeplabV3Plus(image_size=IMAGE_SIZE, num_classes=NUM_CLASSES)
-metrics_wce = wce
-metrics_bce = bce
+metrics_wce = WeightedCrossEntropy
+metrics_bce = BalancedCrossEntropy
 optimizer = optim_pool(learning_rate=learning_rate)[optim_type]
 cb = TimingCallback()
 callback = [DvcLiveCallback(path="./" + name), tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3), cb]
