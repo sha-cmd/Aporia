@@ -115,8 +115,8 @@ def main(model="aucun"):
 
     test_images = sorted(glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[-test_size:]
     test_masks = sorted(glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[-test_size:]
-    metrics_wce = WeightedCrossEntropy()
-    metrics_bce = BalancedCrossEntropy()
+    metrics_wce = WeightedCrossEntropy
+    metrics_bce = BalancedCrossEntropy
     cb = TimingCallback()
 
     if model == "k2000":
