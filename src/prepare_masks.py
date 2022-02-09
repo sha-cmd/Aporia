@@ -8,11 +8,12 @@ layer_list = anticlee()
 dict_label_clr = laerte.sisyphe()
 
 
-def blur(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+def blur(img_str):
+    image = cv2.imread(img_str)
     kernel = 5
-    blur_charm = cv2.GaussianBlur(gray, (kernel, kernel), 0)
-    return blur_charm
+    img_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    img_blur = cv2.GaussianBlur(img_gray, (kernel, kernel), 0)
+    return img_blur
 
 
 def guineapig():
@@ -29,15 +30,6 @@ def guineapig():
             label = dfl.at[poly_num, 'objects']['label']
             poly = np.array([dfl.at[poly_num, 'objects']['polygon']])
             img_mask = cv2.fillPoly(img_mask, poly, dict_label_clr[label])
-        # Stock of those lines in comment mode, in case of inference necessities
-        #img_name = layer_list[pic_num][:7] + '/coarse_tuning/leftImg8bit/' \
-        #           + layer_list[pic_num].split('/')[-3] + '/' \
-        #           + layer_list[pic_num].split('/')[-2] + '/' \
-        #           + layer_list[pic_num].split('/')[-1][:-31] + 'leftImg8bit.png'
-        # image = cv2.imread(img_name)
-        # masked_image = cv2.bitwise_and(blur(image), img_mask)
-        img_mask_name = layer_list[pic_num][:-4] + 'png'
-        cv2.imwrite(img_mask_name, img_mask)
     return
 
 
