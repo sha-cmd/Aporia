@@ -4,27 +4,26 @@ dans le navigateur web via dvc studio, et github, moyennant pour ce dernier l’
 fichier de workflow dans le répertoire .github/workflow"""
 import subprocess
 from random import randint
-from random import random
+from random import uniform
 from random import seed
 from random import choice
 from tools import optim_pool
 
-num_exps = 4
+num_exps = 2
 data_mix = ['original_version', 'multiplication']
 
 for n in range(num_exps):
     seed(randint(1, 1000))
-    rand_nb = random
+    rand_nb = uniform
     nb = n % 2
     params = {
-        "data_mix": data_mix[nb],
         "optimizer": choice(list(optim_pool().keys())),
-        "learning_rate": choice([0.001, 0.0005, 0.00001]),
-        "wce_beta": round(rand_nb(), 2),
-        "bce_beta": round(rand_nb(), 2)
+        "learning_rate": round(rand_nb(0.00001, 0.001), 5),
+        "wce_beta": round(rand_nb(0.5, 1), 2),
+        "bce_beta": round(rand_nb(0.5, 1), 2)
     }
     subprocess.run(["dvc", "exp", "run", "k2000", "-f", "--queue",
-                    "--set-param", f"k2000.data_mix={params['data_mix']}",
+                    "--set-param", f"k2000.data_mix={data_mix[0]}",
                     "--set-param", f"k2000.learning_rate={params['learning_rate']}",
                     "--set-param", f"k2000.optim_type={params['optimizer']}",
                     "--set-param", f"constants.wce_beta={params['wce_beta']}",
@@ -32,7 +31,23 @@ for n in range(num_exps):
                     ])
 
     subprocess.run(["dvc", "exp", "run", "dolorean", "-f", "--queue",
-                    "--set-param", f"dolorean.data_mix={params['data_mix']}",
+                    "--set-param", f"dolorean.data_mix={data_mix[0]}",
+                    "--set-param", f"dolorean.learning_rate={params['learning_rate']}",
+                    "--set-param", f"dolorean.optim_type={params['optimizer']}",
+                    "--set-param", f"constants.wce_beta={params['wce_beta']}",
+                    "--set-param", f"constants.bce_beta={params['wce_beta']}",
+                    ])
+
+    subprocess.run(["dvc", "exp", "run", "k2000", "-f", "--queue",
+                    "--set-param", f"k2000.data_mix={data_mix[1]}",
+                    "--set-param", f"k2000.learning_rate={params['learning_rate']}",
+                    "--set-param", f"k2000.optim_type={params['optimizer']}",
+                    "--set-param", f"constants.wce_beta={params['wce_beta']}",
+                    "--set-param", f"constants.bce_beta={params['wce_beta']}",
+                    ])
+
+    subprocess.run(["dvc", "exp", "run", "dolorean", "-f", "--queue",
+                    "--set-param", f"dolorean.data_mix={data_mix[1]}",
                     "--set-param", f"dolorean.learning_rate={params['learning_rate']}",
                     "--set-param", f"dolorean.optim_type={params['optimizer']}",
                     "--set-param", f"constants.wce_beta={params['wce_beta']}",
