@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from PIL import Image
+import re
 
 IMAGE_SIZE = 256
 BATCH_SIZE = 4
