@@ -5,6 +5,9 @@ stages:
   brush-work:
     cmd: python src/prepare_masks.py
 
+  multiplication:
+    cmd: python src/data_augmentation.py
+
   k2000:
     cmd: python src/deeplabv3_plus.py --type dl
     params:
