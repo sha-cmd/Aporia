@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from PIL import Image
+
 IMAGE_SIZE = 256
 BATCH_SIZE = 4
 NUM_CLASSES = 8
@@ -25,9 +26,9 @@ def optim_pool(learning_rate=0.001):
                   'rmsprop': tf.keras.optimizers.RMSprop(learning_rate=learning_rate),
                   'adadelta': tf.keras.optimizers.Adadelta(learning_rate=learning_rate),
                   'adagrada': tf.keras.optimizers.Adagrad(learning_rate=learning_rate),
-                  'adamax': tf.keras.optimizers.Adamax(learning_rate=learning_rate),
-                  'nadam': tf.keras.optimizers.Nadam(learning_rate=learning_rate),
-                  'ftrl': tf.keras.optimizers.Ftrl(learning_rate=learning_rate)}
+           #       'adamax': tf.keras.optimizers.Adamax(learning_rate=learning_rate),
+                  'nadam': tf.keras.optimizers.Nadam(learning_rate=learning_rate)}
+             # 'ftrl': tf.keras.optimizers.Ftrl(learning_rate=learning_rate)}
     return dict_optim
 
 
@@ -53,7 +54,7 @@ def load_data(image_list, mask_list):
     return image, mask
 
 
-def data_original_version(image_list, mask_list, batch_size=BATCH_SIZE):
+def data_simple_treatment(image_list, mask_list, batch_size=BATCH_SIZE):
     """Retourne les données telles quelles"""
     dataset = tf.data.Dataset.from_tensor_slices((image_list, mask_list))
     dataset = dataset.map(load_data, num_parallel_calls=tf.data.AUTOTUNE)
