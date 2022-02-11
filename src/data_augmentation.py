@@ -32,7 +32,7 @@ def wart_hog():
                    (image_str.split('/')[-1].split('_leftImg8bit')[0] == mask_str
                     .split('/')[-1].split('_gtFine_polygons_octogroups')[0])
             if it % 75 == 0:
-                print(f'traiter : {it}\nrestant : {it - len(image_str_list)}')
+                    print(f'traiter : {it}\nrestant : {it - len(image_str_list[num_pack])}')
             image = imageio.imread(image_str)
             segmap = imageio.imread(mask_str)
             seq = iaa.Sequential([
