@@ -179,8 +179,7 @@ start_time = time()
 history = model.fit(train_dataset, validation_data=val_dataset, batch_size=BATCH_SIZE, epochs=epochs, callbacks=[callback])
 model.save('models/' + name)
 
-# Time log Intégration au tableau de comparatif DVC
-integrate(round((time()-start_time), 2), 'time', name)
+time = round((time()-start_time), 2)
 
 # Création des plots
 mps.main(name)
@@ -188,9 +187,11 @@ mps.main(name)
 # Création de la métriques sur jeu de test
 mIoU, dice = irnc.main(test_images, test_masks, name)
 
+metric = [time, mIoU, dice]
+metric_name = ['time', 'mIoU', 'dice']
+# Time log Intégration au tableau de comparatif DVC
 # mIoU Integration au tableau de comparatif DVC
-integrate(mIoU, 'mIoU', name)
-
 # Dice Integration au tableau de comparatif DVC
-integrate(dice, 'dice', name)
+integrate(metric, metric_name, name)
+
 
