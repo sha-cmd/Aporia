@@ -96,14 +96,15 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
     return data_generator
 
 
-def integrate(metric, metric_name, name):
-    df = pd.read_json(name + '.json', orient='index')
-    df.at[metric_name, 0] = round(metric, 2)
-    df.to_json(name + '.json', orient='index')
+def integrate(metric_list, metric_name_list, name):
+    for metric, metric_name in zip(metric_list, metric_name_list):
+        df = pd.read_json(name + '.json', orient='index')
+        df.at[metric_name, 0] = round(metric, 2)
+        df.to_json(name + '.json', orient='index')
 
     with open(name + '.json', 'r') as f:
         line = f.read()
-    for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+.?\d*', line)):
+    for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+[^"].?\d*', line)):
         line = line.replace(old, new)
     with open(name + '.json', 'w') as f:
         f.write(line)
