@@ -5,8 +5,8 @@ import pandas as pd
 import inference as irnc
 import tensorflow as tf
 import re
+import sys
 
-from tensorflow.keras.callbacks import Callback
 from objects.WeightedCrossEntropy import WeightedCrossEntropy
 from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from objects.DataGenerator import DataGenerator
@@ -82,14 +82,29 @@ keras.backend.clear_session()
 
 model = get_model((IMAGE_SIZE, IMAGE_SIZE), NUM_CLASSES)
 
+if data_mix == 'original_version':
+    train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.png"
+    train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.png"
+    val_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/val/**/*.png"
+    val_masks_str = DATA_DIR + "/finetuning/gtFine/val/**/*octogroups.png"
+elif data_mix == 'multiplication':
+    train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.*g"
+    train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.*g"
+    val_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/val/**/*.*g"
+    val_masks_str = DATA_DIR + "/finetuning/gtFine/val/**/*octogroups.*g"
+else:
+    sys.exit()
+
 train_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/train/**/*.png"), recursive=True))[:NUM_TRAIN_IMAGES]
+    glob(os.path.join(train_images_str), recursive=True))[:NUM_TRAIN_IMAGES]
 train_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/train/**/*octogroups.png"), recursive=True))[:NUM_TRAIN_IMAGES]
+    glob(os.path.join(train_masks_str), recursive=True))[:NUM_TRAIN_IMAGES]
 val_images = sorted(
-    glob(os.path.join(DATA_DIR, "coarse_tuning/leftImg8bit/val/**/*.png"), recursive=True))[:NUM_VAL_IMAGES]
+    glob(os.path.join(val_images_str), recursive=True))[:NUM_VAL_IMAGES]
 val_masks = sorted(
-    glob(os.path.join(DATA_DIR, "finetuning/gtFine/val/**/*octogroups.png"), recursive=True))[:NUM_VAL_IMAGES]
+    glob(os.path.join(val_masks_str), recursive=True))[:NUM_VAL_IMAGES]
+
+
 
 print('Found', len(train_images), 'training images')
 print('Found', len(train_masks), 'training masks')

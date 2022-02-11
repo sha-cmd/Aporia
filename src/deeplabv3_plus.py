@@ -3,6 +3,7 @@ import multi_plots as mps
 import os
 import pandas as pd
 import re
+import sys
 import tensorflow as tf
 import yaml
 from tools import optim_pool
@@ -16,6 +17,7 @@ from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_I
 from objects.DataGenerator import DataGenerator
 from time import time
 
+
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
     data_mix = str(params['k2000']['data_mix'])
@@ -25,10 +27,18 @@ with open("params.yaml", 'r') as fd:
     optim_type = str(params['k2000']['optim_type'])
     learning_rate = float(params['k2000']['learning_rate'])
 
-train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.png"
-train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.png"
-val_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/val/**/*.png"
-val_masks_str = DATA_DIR + "/finetuning/gtFine/val/**/*octogroups.png"
+if data_mix == 'original_version':
+    train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.png"
+    train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.png"
+    val_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/val/**/*.png"
+    val_masks_str = DATA_DIR + "/finetuning/gtFine/val/**/*octogroups.png"
+elif data_mix == 'multiplication':
+    train_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/train/**/*.*g"
+    train_masks_str = DATA_DIR + "/finetuning/gtFine/train/**/*octogroups.*g"
+    val_images_str = DATA_DIR + "/coarse_tuning/leftImg8bit/val/**/*.*g"
+    val_masks_str = DATA_DIR + "/finetuning/gtFine/val/**/*octogroups.*g"
+else:
+    sys.exit()
 
 train_images = sorted(
     glob(os.path.join(train_images_str), recursive=True))[:NUM_TRAIN_IMAGES]
