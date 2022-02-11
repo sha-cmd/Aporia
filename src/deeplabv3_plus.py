@@ -7,6 +7,7 @@ import sys
 import tensorflow as tf
 import yaml
 from tools import optim_pool
+from tools import integrate
 from objects.WeightedCrossEntropy import WeightedCrossEntropy
 from objects.BalancedCrossEntropy import BalancedCrossEntropy
 from dvclive.keras import DvcLiveCallback
@@ -178,22 +179,18 @@ start_time = time()
 history = model.fit(train_dataset, validation_data=val_dataset, batch_size=BATCH_SIZE, epochs=epochs, callbacks=[callback])
 model.save('models/' + name)
 
-# Time log
-df = pd.read_json(name + '.json', orient='index')
-df.at['time', 0] = round((time()-start_time), 2)
-df.to_json(name + '.json', orient='index')
-
-with open(name + '.json', 'r') as f:
-    line = f.read()
-for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+.?\d+', line)):
-    line = line.replace(old, new)
-with open(name + '.json', 'w') as f:
-    f.write(line)
+# Time log Intégration au tableau de comparatif DVC
+integrate(round((time()-start_time), 2), 'time', name)
 
 # Création des plots
 mps.main(name)
 
 # Création de la métriques sur jeu de test
-irnc.main(test_images, test_masks, name)
+mIoU, dice = irnc.main(test_images, test_masks, name)
 
+# mIoU Integration au tableau de comparatif DVC
+integrate(mIoU, 'mIoU', name)
+
+# Dice Integration au tableau de comparatif DVC
+integrate(dice, 'dice', name)
 

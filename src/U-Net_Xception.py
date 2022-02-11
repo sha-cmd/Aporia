@@ -17,7 +17,7 @@ from tensorflow import keras
 from dvclive.keras import DvcLiveCallback
 from random import sample
 from time import time
-
+from tools import integrate
 
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
@@ -165,20 +165,20 @@ history = model.fit(train_dataset, epochs=epochs, validation_data=val_dataset, b
 model.save('models/' + name)
 
 # Time log
-df = pd.read_json(name + '.json', orient='index')
-df.at['time', 0] = round((time()-start_time), 2)
-df.to_json(name + '.json', orient='index')
-
-with open(name + '.json', 'r') as f:
-    line = f.read()
-for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+.?\d+', line)):
-    line = line.replace(old, new)
-with open(name + '.json', 'w') as f:
-    f.write(line)
+integrate(round((time()-start_time), 2), 'time', name)
 
 # Création des plots
 mps.main(name)
 
 # Création de la métriques sur jeu de test
+mIoU, dice = irnc.main(test_images, test_masks, name)
 
-irnc.main(test_images, test_masks, name)
+# mIoU Integration au tableau de comparatif DVC
+integrate(mIoU, 'mIoU', name)
+
+
+# Dice Integration au tableau de comparatif DVC
+integrate(dice, 'dice', name)
+
+
+

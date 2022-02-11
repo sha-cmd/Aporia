@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import sys
 import seaborn as sns
+import statistics
 import tensorflow as tf
 import yaml
 
@@ -139,6 +140,7 @@ def main(test_images, test_masks, model="aucun"):
     colormap = colormap * 100
     colormap = colormap.astype(np.uint8)
     plot_predictions(test_images[4:5], colormap, model=history)
+    res_mIoU = []
     nb = test_size
     for i in range(nb):
         if (i % 20) == 0:
@@ -147,9 +149,11 @@ def main(test_images, test_masks, model="aucun"):
         avg_res = sum(res) / len(res)
         live.log("mIoU", round(avg_res, 2))
         live.next_step()
+        res_mIoU.append(avg_res)
     plot(model, 'mIoU')
 
     num_class = 8
+    res_dice = []
     for i in range(nb):
         if (i % 20) == 0:
             print(f"images traité pour le Dice : {i}\nimages restantes pour le Dice {i - nb}\n")
@@ -160,8 +164,9 @@ def main(test_images, test_masks, model="aucun"):
         dice_score = dice_coef_multilabel(imgA, imgB, num_class)
         live.log("Dice_coefficient", round(dice_score, 2))
         live.next_step()
+        res_dice.append(dice_score)
     plot(model, 'Dice_coefficient')
 
-
+    return round(statistics.mean(res_mIoU), 2), round(statistics.mean(res_dice), 2)
 if __name__ == "__main__":
     main()

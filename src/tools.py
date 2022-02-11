@@ -7,8 +7,8 @@ IMAGE_SIZE = 256
 BATCH_SIZE = 4
 NUM_CLASSES = 8
 DATA_DIR = "/home/romain/Documents/BackUp/Special/Projets/Code_IIA/Projet_8/Aporia/data"
-NUM_TRAIN_IMAGES = 500
-NUM_VAL_IMAGES = 250
+NUM_TRAIN_IMAGES = -100
+NUM_VAL_IMAGES = -1
 
 
 def loss_pool():
@@ -93,3 +93,16 @@ def data_augmented(image_list, mask_list, batch_size=BATCH_SIZE):
                                                  class_mode='input', batch_size=BATCH_SIZE, save_to_dir='if/')
 
     return data_generator
+
+
+def integrate(metric, metric_name, name):
+    df = pd.read_json(name + '.json', orient='index')
+    df.at[metric_name, 0] = round(metric, 2)
+    df.to_json(name + '.json', orient='index')
+
+    with open(name + '.json', 'r') as f:
+        line = f.read()
+    for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+.?\d*', line)):
+        line = line.replace(old, new)
+    with open(name + '.json', 'w') as f:
+        f.write(line)
