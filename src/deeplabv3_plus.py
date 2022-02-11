@@ -16,7 +16,7 @@ from tensorflow.keras import layers
 from tools import DATA_DIR, NUM_CLASSES, IMAGE_SIZE, NUM_TRAIN_IMAGES, NUM_VAL_IMAGES, BATCH_SIZE
 from objects.DataGenerator import DataGenerator
 from time import time
-
+from random import sample
 
 with open("params.yaml", 'r') as fd:
     params = yaml.safe_load(fd)
@@ -40,6 +40,8 @@ elif data_mix == 'multiplication':
 else:
     sys.exit()
 
+
+
 train_images = sorted(
     glob(os.path.join(train_images_str), recursive=True))[:NUM_TRAIN_IMAGES]
 train_masks = sorted(
@@ -48,11 +50,30 @@ val_images = sorted(
     glob(os.path.join(val_images_str), recursive=True))[:NUM_VAL_IMAGES]
 val_masks = sorted(
     glob(os.path.join(val_masks_str), recursive=True))[:NUM_VAL_IMAGES]
+test_images = []
+test_masks = []
+
+# Cette ligne doit-être commenté durant le développement
+# pour ne pas faire de trop long apprentissage chronophage
+NUM_TRAIN_IMAGES = len(train_images)
+
+# Selection des données de test
+indextestlist = sorted(sample([x for x in range(NUM_TRAIN_IMAGES)], test_size))[::-1]
+indextrainlist = [x for x in range(NUM_TRAIN_IMAGES)]
+test_images = [train_images[i] for i in indextestlist]
+test_masks = [train_masks[i] for i in indextestlist]
+# Suppression des doublons dans les données d’entraînement
+for i in indextestlist:
+    del indextrainlist[i]
+train_images = [train_images[i] for i in indextrainlist]
+train_masks = [train_masks[i] for i in indextrainlist]
 
 print('Found', len(train_images), 'training images')
 print('Found', len(train_masks), 'training masks')
 print('Found', len(val_images), 'validation images')
 print('Found', len(val_masks), 'validation masks')
+print('Found', len(test_images), 'test images')
+print('Found', len(test_masks), 'test masks')
 
 assert len(train_images) > 0
 
@@ -173,6 +194,6 @@ with open(name + '.json', 'w') as f:
 mps.main(name)
 
 # Création de la métriques sur jeu de test
-irnc.main(name)
+irnc.main(test_images, test_masks, name)
 
 
