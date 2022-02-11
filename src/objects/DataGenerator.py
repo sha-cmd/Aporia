@@ -1,7 +1,7 @@
 import sys
 
 from .ModelVariables import ModelVariables
-from tools import data_original_version
+from tools import data_simple_treatment
 from tools import data_augmented
 from tools import BATCH_SIZE
 
@@ -23,16 +23,21 @@ class DataGenerator(ModelVariables):
             return self.data_vo()
         elif data_mix == "augmented":
             return self.data_aug()
+        elif data_mix == "multiplication":
+            return self.data_multiplication()
         else:
             print('paramètre data_mix vaut "augmented" ou "original_version"')
             sys.exit()
 
-
     def data_vo(self):
         print('data_vo')
-        return data_original_version(self.path_images, self.path_masks, self.size_batch)
+        return data_simple_treatment(self.path_images, self.path_masks, self.size_batch)
 
     def data_aug(self):
         print('data_aug')
         return data_augmented(self.path_images, self.path_masks, self.size_batch)
+
+    def data_multiplication(self):
+        print('data_multiplication')
+        return data_simple_treatment(self.path_images, self.path_masks, self.size_batch)
 
