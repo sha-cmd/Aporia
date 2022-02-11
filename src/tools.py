@@ -104,7 +104,7 @@ def integrate(metric_list, metric_name_list, name):
 
     with open(name + '.json', 'r') as f:
         line = f.read()
-    for old, new in zip(re.findall(r'{\"0\":\d+.?\d*}', line), re.findall(r'\d+[^"].?\d*', line)):
+    for old, new in zip(re.findall(r'{\"0\":-?\d+.?\d*}', line), re.findall(r'-?\d+[^"].?\d*', line)):
         line = line.replace(old, new)
     with open(name + '.json', 'w') as f:
         f.write(line)
