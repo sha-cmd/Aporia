@@ -1,1 +1,1 @@
-{"step":2.0,"loss":0.6407209635,"accuracy":0.7941673398,"WeightedCrossEntropy":0.3701820672,"BalancedCrossEntropy":0.9243088961,"val_loss":2.2222573757,"val_accuracy":0.4232655764,"val_WeightedCrossEntropy":0.3995258212,"val_BalancedCrossEntropy":0.8755345345,"time":63.74}
+{"BalancedCrossEntropy":0.9114899635,"WeightedCrossEntropy":0.3808414936,"accuracy":0.8888064027,"loss":0.3437298238,"mIoU":0.49,"step":11.0,"time":607.39,"val_BalancedCrossEntropy":0.9011721015,"val_WeightedCrossEntropy":0.384051621,"val_accuracy":0.7732263207,"val_loss":0.7155129313,"dice":0.59}

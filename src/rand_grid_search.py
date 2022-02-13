@@ -9,7 +9,7 @@ from random import seed
 from random import choice
 from tools import optim_pool
 
-num_exps = 2
+num_exps = 8
 data_mix = ['original_version', 'multiplication']
 
 for n in range(num_exps):

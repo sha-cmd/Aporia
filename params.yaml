@@ -3,17 +3,17 @@ constants:
   bce_beta: 0.5
 
 k2000:
-  epochs: 3
-  data_mix: original_version
+  epochs: 20
+  data_mix: multiplication
   name: k2000
-  test_size: 100
+  test_size: 500
   optim_type: adam
   learning_rate: 0.001
 
 dolorean:
-  epochs: 3
-  data_mix: original_version
+  epochs: 20
+  data_mix: multiplication
   name: dolorean
-  test_size: 100
+  test_size: 500
   optim_type: adam
   learning_rate: 0.001

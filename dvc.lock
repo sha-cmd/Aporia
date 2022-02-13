@@ -8,35 +8,35 @@ stages:
     cmd: python src/deeplabv3_plus.py --type dl
     params:
       params.yaml:
-        k2000.epochs: 3
+        k2000.epochs: 12
     outs:
     - path: k2000.json
-      md5: 0a6e1fc1c16134e65202c44290275616
-      size: 273
+      md5: d82988059d17646c1ac62ccf87526305
+      size: 299
     - path: k2000/Dice_coefficient.csv
-      md5: 9cbed44f50383530484076023c52d909
-      size: 2619
+      md5: 7c0d8ad0e308e1183fa9e6677d19009b
+      size: 13373
     - path: k2000/Dice_coefficient_density.jpg
-      md5: daa88c386eeb99f7df46cf515f82a7f9
-      size: 17041
+      md5: 07811c1288041573516505e8f4605646
+      size: 17286
     - path: k2000/accuracy_multi_plots.csv
-      md5: d62f89cebe36f570630cf66b008a791a
-      size: 289
+      md5: 5a8a13802bf3d15821d120023c0fcfe3
+      size: 1049
     - path: k2000/inference.jpg
-      md5: 297d60b62456edfd952b374d80dee759
-      size: 102150
+      md5: 29c7fc4d20c3f1989b25e1b265298af4
+      size: 99765
     - path: k2000/loss_multi_plots.csv
-      md5: a46430b0a575f98bd03cae4a55f72189
-      size: 283
+      md5: f49c833f464bc09baf9b4266ab693f06
+      size: 1042
     - path: k2000/mIoU.csv
-      md5: 97781a9509af0ab9883f3f3aa1b2f775
-      size: 2485
+      md5: 2fb61d418e572172baa4ce99da82d8d1
+      size: 13256
     - path: k2000/mIoU_density.jpg
-      md5: a4a25c8433e7abbba92e7d871a1bd8b7
-      size: 15918
+      md5: 90ffb6f9b78be8fe2541883496874a00
+      size: 15636
     - path: models/k2000
-      md5: 600914a96a35b06ff25a81a432e1deea.dir
-      size: 146551693
+      md5: 9857614d75f76fb31e9b1faa8871e89e.dir
+      size: 146551697
       nfiles: 4
   kit:
     cmd: python src/inference.py
@@ -44,31 +44,31 @@ stages:
     cmd: python src/U-Net_Xception.py --type dl
     outs:
     - path: dolorean.json
-      md5: ab2b1efa50b2164021951ae9e06bcb92
-      size: 273
+      md5: 091220e531c41a108bb3f25bc43877fc
+      size: 298
     - path: dolorean/Dice_coefficient.csv
-      md5: 883b008ea0e007524c342baa05201ab7
-      size: 2624
+      md5: c2770c21a0a6afcf43c83da787e870f3
+      size: 13380
     - path: dolorean/Dice_coefficient_density.jpg
-      md5: 2894ac7a6f39a9cb6b524d8019529b63
-      size: 18292
+      md5: 4388c9adfc4ed91b77a96f716bc9d324
+      size: 17508
     - path: dolorean/accuracy_multi_plots.csv
-      md5: 29c2cfff3b70ef4d0d8b9731c98956e4
-      size: 288
+      md5: 4d1e6311c62422d191cedbb7df17addb
+      size: 1052
     - path: dolorean/inference.jpg
-      md5: ba748ed3587d3c59ab44034d3ddf1b52
-      size: 96227
+      md5: 67f911f1f0138da5661820289098a367
+      size: 105884
     - path: dolorean/loss_multi_plots.csv
-      md5: 7335b4d48a27e2584bb8033dd05f15a7
-      size: 282
+      md5: c56e59fb8600933f7eff5e718c5f0588
+      size: 1046
     - path: dolorean/mIoU.csv
-      md5: 30ae1e4c3bc843a348b5d19995459a34
-      size: 2477
+      md5: dfc05be55312a01db34a5d80a800791a
+      size: 13244
     - path: dolorean/mIoU_density.jpg
-      md5: 96a848a7db5b2a735f3331845b56268a
-      size: 16262
+      md5: a569e33230c7f93a7930495faeab940b
+      size: 15564
     - path: models/dolorean
-      md5: 5e9a0de8891084888e1d1a11ad4457a5.dir
+      md5: a66aba901eeb4ffbf58a6e95b2b1c730.dir
       size: 26598862
       nfiles: 4
   shelob:
@@ -83,3 +83,7 @@ stages:
     - path: stick/stick_awards.csv
       md5: 167b2c06847576dfd91a4610bfcc7905
       size: 76
+  multiplication:
+    cmd: python src/data_augmentation.py
+  experiments:
+    cmd: python src/rand_grid_search.py

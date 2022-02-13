@@ -1,0 +1,5 @@
+[core]
+    remote = localrem
+    autostage = true
+['remote "localrem"']
+    url = ../../stockage
