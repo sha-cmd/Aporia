@@ -1,0 +1,14 @@
+venv/
+data/
+.idea/
+models/
+k2000/*.tsv
+yamlhadoc.txt
+dvc_plots/*
+dolorean/*.tsv
+*.ipynb
+results
+if/
+image*
+segmap*
+/models

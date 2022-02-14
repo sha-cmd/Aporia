@@ -1,19 +1,19 @@
 constants:
-  wce_beta: 0.7
-  bce_beta: 0.5
+  wce_beta: 0.55
+  bce_beta: 0.55
 
 k2000:
-  epochs: 20
+  epochs: 25
   data_mix: multiplication
   name: k2000
   test_size: 500
-  optim_type: adam
-  learning_rate: 0.001
+  optim_type: rmsprop
+  learning_rate: 0.00001
 
 dolorean:
-  epochs: 20
+  epochs: 25
   data_mix: multiplication
   name: dolorean
   test_size: 500
-  optim_type: adam
-  learning_rate: 0.001
+  optim_type: nadam
+  learning_rate: 0.00001
