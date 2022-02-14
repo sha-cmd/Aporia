@@ -17,10 +17,6 @@ stages:
         cache: false
         persist: true
     outs:
-    - models/k2000:
-        cache: false
-        persist: true
-        desc: modeling of the segmentation of images of Cityscapes.
     - k2000/mIoU_density.jpg:
         cache: false
         persist: true
@@ -65,10 +61,6 @@ stages:
         cache: false
         persist: true
     outs:
-    - models/dolorean:
-        cache: false
-        persist: true
-        desc: modeling of the segmentation of images of Cityscapes.
     - dolorean/mIoU_density.jpg:
         cache: false
         persist: true
