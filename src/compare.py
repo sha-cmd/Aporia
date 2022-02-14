@@ -62,7 +62,7 @@ def sicle(name='aucun'):
                 f.writelines(f"- {key_dir}/{key_metric}_multi_plots.csv:\n\
                 cache: false\n\
                 persist: true\n\
-                title: Train/Test {' '.join(key_metric.split('_')).title()} {key_dir}\n\
+                title: Train {' '.join(key_metric.split('_')).title()} Comparison \n\
                 template: multi_loss\n\
                 x: epoch\n\
                 y: {key_metric}\n\

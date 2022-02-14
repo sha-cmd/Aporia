@@ -82,6 +82,12 @@ stages:
   comparison:
     cmd: python src/compare.py --type dl
     outs:
+    - path: comparison/BalancedCrossEntropy_multi_plots.csv
+      md5: a7ae8c25cbd9adfcf64fba0938fe55e3
+      size: 2670
+    - path: comparison/WeightedCrossEntropy_multi_plots.csv
+      md5: 7eac1f1f30fb5d76550ecfd11bf6b704
+      size: 2681
     - path: comparison/accuracy_multi_plots.csv
       md5: bfe3b624854d6c961228a765d1e9787f
       size: 2667
