@@ -79,3 +79,12 @@ stages:
     cmd: python src/data_augmentation.py
   experiments:
     cmd: python src/rand_grid_search.py
+  comparison:
+    cmd: python src/compare.py --type dl
+    outs:
+    - path: comparison/accuracy_multi_plots.csv
+      md5: bfe3b624854d6c961228a765d1e9787f
+      size: 2667
+    - path: comparison/loss_multi_plots.csv
+      md5: ba564ef518c206b7eaed33dcbdf2eca3
+      size: 2663
